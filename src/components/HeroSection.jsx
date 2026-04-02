@@ -35,7 +35,7 @@ export default function HeroSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Badge */}
         <div
-          className={`inline-flex items-center gap-2 px-5 py-2 rounded-full glass mb-8 transition-all duration-700 ${
+          className={`inline-flex items-center gap-2 px-5 py-2 rounded-full glass mb-8 mt-32 transition-all duration-700 ${
             isVisible ? 'animate-fade-down' : 'opacity-0'
           }`}
         >
