@@ -8,6 +8,7 @@ import CTASection from '../components/CTASection';
 import AboutPreview from '../components/aboutPreview';
 import Footer from '../components/footer';
 import Navbar from '../components/navbar';
+import OurTeam from '@/components/ourTeam';
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       <Locations />
       <WhyChooseUs />
       <Testimonials />
+      <OurTeam />
       <CTASection />
       <Footer />
     </>

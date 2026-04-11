@@ -75,6 +75,8 @@ export const fetchCompanyInfo = async () => {
 // ─── Full data export (use sparingly) ────────────────────
 export const getAllData = () => data;
 
+export const getTeamDetails = () => data.team || [];
+
 export default {
   getCompanyInfo,
   getCompanyName,
