@@ -8,6 +8,7 @@ import {
 } from '../../services/dataService';
 import { useScrollAnimation, getIconForKey } from '../../services/hooks/useUtils';
 import { FiArrowRight } from 'react-icons/fi';
+import OurTeam from '@/components/ourTeam';
 
 export default function About() {
   const company = getCompanyInfo();
@@ -107,7 +108,7 @@ export default function About() {
           </div>
         </div>
       </section>
-
+      <OurTeam color='light'/>
       {/* CTA */}
       <section className="py-20 bg-gradient-to-r from-primary to-primary-dark text-center" id="about-cta">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
