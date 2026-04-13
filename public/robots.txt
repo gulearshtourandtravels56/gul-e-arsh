@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://gulearshtourandtravel.in
+
+# Sitemaps
+Sitemap: https://gulearshtourandtravel.in/sitemap.xml
