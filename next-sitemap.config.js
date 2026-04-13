@@ -2,9 +2,11 @@
 module.exports = {
   siteUrl: 'https://gulearshtourandtravels.in',
   generateRobotsTxt: true,
-
-  // Robots.txt configuration
   robotsTxtOptions: {
+    sitemaps: [
+      'https://gulearshtourandtravels.in/sitemap.xml',
+      'https://gulearshtourandtravels.in/server-sitemap.xml',
+    ],
     policies: [
       {
         userAgent: '*',
@@ -14,45 +16,63 @@ module.exports = {
           '/api',
           '/_next',
           '/private',
+          '/*.json$',
         ],
       },
+      {
+        userAgent: 'GPTBot',
+        disallow: '/',
+      },
+      {
+        userAgent: 'ChatGPT-User',
+        disallow: '/',
+      },
+      {
+        userAgent: 'CCBot',
+        disallow: '/',
+      },
     ],
+    host: 'https://gulearshtourandtravels.in',
   },
-
-  // Sitemap settings
   sitemapSize: 5000,
   changefreq: 'weekly',
   priority: 0.7,
   outDir: 'public',
-
-  // Customize each URL
   transform: async (config, path) => {
+    // Customize URLs here if needed
     let priority = 0.7;
     let changefreq = 'weekly';
-
-    // Homepage
+    
     if (path === '/') {
       priority = 1.0;
       changefreq = 'daily';
-    }
-
-    // Important pages
-    else if (path === '/packages' || path === '/locations') {
+    } else if (path === '/packages' || path === '/locations') {
       priority = 0.9;
       changefreq = 'weekly';
-    }
-
-    // Secondary pages
-    else if (path === '/about' || path === '/contact') {
+    } else if (path === '/about' || path === '/contact') {
       priority = 0.8;
       changefreq = 'monthly';
     }
-
+    
     return {
-      loc: `${config.siteUrl}${path}`, // IMPORTANT: absolute URL
+      loc: path,
       changefreq,
       priority,
       lastmod: new Date().toISOString(),
+      alternateRefs: [
+        {
+          href: `https://gulearshtourandtravels.in${path}`,
+          hrefLang: 'en-US',
+        },
+      ],
     };
   },
+  additionalPaths: async (config) => [
+    {
+      loc: 'https://gulearshtourandtravels.in',
+      changefreq: 'daily',
+      priority: 1,
+      lastmod: new Date().toISOString(),
+    },
+  ],
 };
