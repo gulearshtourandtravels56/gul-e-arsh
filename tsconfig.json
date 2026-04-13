@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "open-next.config.mjs"  ],
+, "open-next.config.mjs", "next-sitemap.config.jts"  ],
   "exclude": ["node_modules"]
 }
