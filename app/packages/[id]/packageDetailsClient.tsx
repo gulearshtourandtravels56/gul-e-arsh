@@ -21,6 +21,7 @@ export default function PackageDetails({ id }: { id: number }) {
   const pkg = getPackageById(id);
   const phone = getPhone();
   const email = getEmail();
+  const whatappLink = `https://wa.me/${phone}?text=Hi, I'm interested in the ${pkg?.title} package (${pkg?.duration}, ${pkg?.price}). Please share more details.`;
   const [ref, isVisible] = useScrollAnimation();
 
   if (!pkg) {
@@ -232,7 +233,7 @@ export default function PackageDetails({ id }: { id: number }) {
                 {/* Enquiry Buttons */}
                 <div className="space-y-3">
                   <a
-                    href={`https://wa.me/919876543210?text=Hi, I'm interested in the ${pkg.title} package (${pkg.duration}, ${pkg.price}). Please share more details.`}
+                    href={whatappLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-3 w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-green-500/30"
