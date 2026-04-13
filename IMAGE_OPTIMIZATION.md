@@ -57,9 +57,9 @@ Before uploading, compress using:
 Add images to sitemap with:
 ```xml
 <url>
-  <loc>https://gulearshtourandtravel.in/packages</loc>
+  <loc>https://gulearshtourandtravels.in/packages</loc>
   <image:image>
-    <image:loc>https://gulearshtourandtravel.in/assets/images/package-1.jpg</image:loc>
+    <image:loc>https://gulearshtourandtravels.in/assets/images/package-1.jpg</image:loc>
     <image:title>Kashmir Honeymoon Package - Week Long Tour</image:title>
   </image:image>
 </url>

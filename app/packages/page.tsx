@@ -10,11 +10,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Kashmir Tour Packages | Honeymoon, Family & Adventure Tours",
     description: "Explore 100+ curated Kashmir tour packages with Gul-e-Arsh.",
-    url: "https://gulearshtourandtravel.in/packages",
+    url: "https://gulearshtourandtravels.in/packages",
     type: "website",
     images: [
       {
-        url: "https://gulearshtourandtravel.in/assets/images/hero-bg.png",
+        url: "https://gulearshtourandtravels.in/assets/images/hero-bg.png",
         width: 1200,
         height: 630,
         alt: "Kashmir Tour Packages",

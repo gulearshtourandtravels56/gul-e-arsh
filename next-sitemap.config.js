@@ -1,11 +1,11 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://gulearshtourandtravel.in',
+  siteUrl: 'https://gulearshtourandtravels.in',
   generateRobotsTxt: true,
   robotsTxtOptions: {
     sitemaps: [
-      'https://gulearshtourandtravel.in/sitemap.xml',
-      'https://gulearshtourandtravel.in/server-sitemap.xml',
+      'https://gulearshtourandtravels.in/sitemap.xml',
+      'https://gulearshtourandtravels.in/server-sitemap.xml',
     ],
     policies: [
       {
@@ -32,7 +32,7 @@ module.exports = {
         disallow: '/',
       },
     ],
-    host: 'https://gulearshtourandtravel.in',
+    host: 'https://gulearshtourandtravels.in',
   },
   sitemapSize: 5000,
   changefreq: 'weekly',
@@ -61,7 +61,7 @@ module.exports = {
       lastmod: new Date().toISOString(),
       alternateRefs: [
         {
-          href: `https://gulearshtourandtravel.in${path}`,
+          href: `https://gulearshtourandtravels.in${path}`,
           hrefLang: 'en-US',
         },
       ],
@@ -69,7 +69,7 @@ module.exports = {
   },
   additionalPaths: async (config) => [
     {
-      loc: 'https://gulearshtourandtravel.in',
+      loc: 'https://gulearshtourandtravels.in',
       changefreq: 'daily',
       priority: 1,
       lastmod: new Date().toISOString(),

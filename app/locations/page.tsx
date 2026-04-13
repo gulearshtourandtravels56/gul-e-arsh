@@ -10,11 +10,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Kashmir Destinations & Locations | Srinagar, Gulmarg, Pahalgam",
     description: "Explore top Kashmir destinations and plan your visit with expert guides and insider tips.",
-    url: "https://gulearshtourandtravel.in/locations",
+    url: "https://gulearshtourandtravels.in/locations",
     type: "website",
     images: [
       {
-        url: "https://gulearshtourandtravel.in/assets/images/srinagar.png",
+        url: "https://gulearshtourandtravels.in/assets/images/srinagar.png",
         width: 1200,
         height: 630,
         alt: "Kashmir Locations & Destinations",

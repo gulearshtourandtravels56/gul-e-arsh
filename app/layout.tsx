@@ -5,20 +5,20 @@ export const metadata: Metadata = {
   title: "Gul-e-Arsh - Kashmir Tour Packages & Travel Guide | Best Travel Agency",
   description: "Discover the breathtaking beauty of Kashmir with Gul-e-Arsh. Premium tour packages, honeymoon tours, family trips, and expert guides for unforgettable Kashmir experiences.",
   keywords: ["Kashmir tours", "Kashmir travel packages", "Kashmir honeymoon", "Srinagar tours", "lake tours Kashmir", "Kashmir travel agency"],
-  metadataBase: new URL("https://gulearshtourandtravel.in"),
+  metadataBase: new URL("https://gulearshtourandtravels.in"),
   alternates: {
-    canonical: "https://gulearshtourandtravel.in",
+    canonical: "https://gulearshtourandtravels.in",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://gulearshtourandtravel.in",
+    url: "https://gulearshtourandtravels.in",
     siteName: "Gul-e-Arsh Tour & Travels",
     title: "Gul-e-Arsh - Kashmir Tour Packages & Travel Guide",
     description: "Premium Kashmir tour packages, honeymoon tours, and family trips with expert local guides. Book your unforgettable Kashmir experience today.",
     images: [
       {
-        url: "https://gulearshtourandtravel.in/assets/images/hero-bg.png",
+        url: "https://gulearshtourandtravels.in/assets/images/hero-bg.png",
         width: 1200,
         height: 630,
         alt: "Kashmir Paradise - Gul-e-Arsh Tour & Travels",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Gul-e-Arsh - Kashmir Tour Packages & Travel Guide",
     description: "Premium Kashmir tour packages, honeymoon tours, and family trips with expert local guides.",
-    images: ["https://gulearshtourandtravel.in/assets/images/hero-bg.png"],
+    images: ["https://gulearshtourandtravels.in/assets/images/hero-bg.png"],
     creator: "@gulearshtour",
   },
   robots: {
@@ -62,9 +62,9 @@ export default function RootLayout({
     "@type": "TravelAgency",
     name: "Gul-e-Arsh Tour & Travels",
     description: "Premium Kashmir tour operator offering customized packages, honeymoon tours, and family trips",
-    url: "https://gulearshtourandtravel.in",
-    logo: "https://gulearshtourandtravel.in/assets/images/logo.png",
-    image: "https://gulearshtourandtravel.in/assets/images/hero-bg.png",
+    url: "https://gulearshtourandtravels.in",
+    logo: "https://gulearshtourandtravels.in/assets/images/logo.png",
+    image: "https://gulearshtourandtravels.in/assets/images/hero-bg.png",
     telephone: "+91 9149598891",
     email: "gulearshtourandtravels56@gmail.com",
     address: {
@@ -96,7 +96,7 @@ export default function RootLayout({
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="theme-color" content="#1a1a1a" />
-        <link rel="canonical" href="https://gulearshtourandtravel.in" />
+        <link rel="canonical" href="https://gulearshtourandtravels.in" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/assets/images/logo.png" />
         <script

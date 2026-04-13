@@ -20,7 +20,7 @@ User-agent: CCBot
 Disallow: /
 
 # Host
-Host: https://gulearshtourandtravel.in
+Host: https://gulearshtourandtravels.in
 
 # Sitemaps
-Sitemap: https://gulearshtourandtravel.in/sitemap.xml
+Sitemap: https://gulearshtourandtravels.in/sitemap.xml

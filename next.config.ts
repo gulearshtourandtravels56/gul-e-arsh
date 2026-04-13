@@ -108,7 +108,7 @@ const nextConfig: NextConfig = {
   
   /* Environment Variables */
   env: {
-    NEXT_PUBLIC_SITE_URL: "https://gulearshtourandtravel.in",
+    NEXT_PUBLIC_SITE_URL: "https://gulearshtourandtravels.in",
   },
 };
 

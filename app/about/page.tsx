@@ -10,11 +10,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About Gul-e-Arsh | Kashmir Tour Operator & Travel Experts",
     description: "Learn about Gul-e-Arsh Tour & Travels and our commitment to providing exceptional Kashmir tour experiences.",
-    url: "https://gulearshtourandtravel.in/about",
+    url: "https://gulearshtourandtravels.in/about",
     type: "website",
     images: [
       {
-        url: "https://gulearshtourandtravel.in/assets/images/about-bg.png",
+        url: "https://gulearshtourandtravels.in/assets/images/about-bg.png",
         width: 1200,
         height: 630,
         alt: "About Gul-e-Arsh - Kashmir Tour Operator",

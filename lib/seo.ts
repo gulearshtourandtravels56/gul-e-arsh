@@ -3,7 +3,7 @@
  * Provides schema markup, metadata generation, and SEO helpers
  */
 
-const SITE_URL = "https://gulearshtourandtravel.in";
+const SITE_URL = "https://gulearshtourandtravels.in";
 const SITE_NAME = "Gul-e-Arsh Tour & Travels";
 
 export const seoConfig = {

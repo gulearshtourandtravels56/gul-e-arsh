@@ -184,10 +184,10 @@ const HeavyComponent = dynamic(
 ### Step 1: Baseline Measurement
 ```bash
 # Run Lighthouse audit
-npx lighthouse https://gulearshtourandtravel.in --preset=desktop
+npx lighthouse https://gulearshtourandtravels.in --preset=desktop
 
 # Check PageSpeed Insights
-# https://pagespeed.web.dev/?url=https://gulearshtourandtravel.in
+# https://pagespeed.web.dev/?url=https://gulearshtourandtravels.in
 ```
 
 ### Step 2: Optimize Critical Path

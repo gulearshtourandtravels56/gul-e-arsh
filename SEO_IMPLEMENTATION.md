@@ -97,7 +97,7 @@ This document outlines all SEO optimizations implemented for the Gul-e-Arsh Tour
 
 ### Phase 1: Immediate Actions (This Week)
 1. **Google Search Console Setup**
-   - Add property for `gulearshtourandtravel.in`
+   - Add property for `gulearshtourandtravels.in`
    - Submit sitemap
    - Ask Google to recrawl and reindex
    - Add verification code to `app/layout.tsx`:
