@@ -5,6 +5,7 @@ import {
   getLocationById,
   getPackageById,
   getPhone,
+  getSocials,
 } from "../../../services/dataService";
 import {
   FiArrowLeft,
@@ -20,6 +21,8 @@ import Link from "next/link";
 export default function LocationDetails({ id }: { id: number }) {
   const location = getLocationById(id);
   const phone = getPhone();
+  const socials = getSocials();
+  
 
   const [selectedItem, setSelectedItem] = useState(null) as any;
 
@@ -302,7 +305,7 @@ export default function LocationDetails({ id }: { id: number }) {
                   </p>
 
                   <a
-                    href={`https://wa.me/${phone.replace(/\D/g, "")}?text=Hi! I'm interested in visiting ${location.name}. Can you help me plan a trip?`}
+                    href={`${socials?.whatsapp}?text=Hi! I'm interested in visiting ${location.name}. Can you help me plan a trip?`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-white px-5 py-3.5 rounded-xl font-semibold mb-3 hover:bg-[#128C7E] transition-colors duration-200"

@@ -4,6 +4,7 @@ import {
   getPackageById,
   getPhone,
   getEmail,
+  getSocials,
 } from "../../../services/dataService";
 import { useScrollAnimation } from "../../../services/hooks/useUtils";
 import {
@@ -21,7 +22,8 @@ export default function PackageDetails({ id }: { id: number }) {
   const pkg = getPackageById(id);
   const phone = getPhone();
   const email = getEmail();
-  const whatappLink = `https://wa.me/${phone}?text=Hi, I'm interested in the ${pkg?.title} package (${pkg?.duration}, ${pkg?.price}). Please share more details.`;
+  const socials = getSocials();
+  const whatappLink = `${socials?.whatsapp}?text=Hi, I'm interested in the ${pkg?.title} package (${pkg?.duration}, ${pkg?.price}). Please share more details.`;
   const [ref, isVisible] = useScrollAnimation();
 
   if (!pkg) {
