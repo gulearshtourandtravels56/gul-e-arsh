@@ -155,15 +155,20 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <div className="flex items-start gap-3 text-gray-400 text-sm">
-                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <a
+                  href={contact.addressLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 text-gray-400 hover:text-primary-light transition-colors text-sm group"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
                     <FiMapPin className="w-4 h-4 text-primary-light" />
                   </div>
                   <div>
                     <p className="text-xs text-gray-500 mb-0.5">Visit Us</p>
                     <p className="font-medium">{contact.address}</p>
                   </div>
-                </div>
+                </a>
               </li>
             </ul>
           </div>

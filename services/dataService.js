@@ -25,6 +25,7 @@ export const getContactInfo = () => data.contact;
 export const getPhone = () => data.contact.phone;
 export const getEmail = () => data.contact.email;
 export const getAddress = () => data.contact.address;
+export const getAddressLink = () => data.contact.addressLink;
 export const getSocials = () => data.contact.socials;
 
 // ─── Services ────────────────────────────────────────────

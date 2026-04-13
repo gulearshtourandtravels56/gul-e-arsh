@@ -93,13 +93,18 @@ export default function Contact() {
 
       {/* Map placeholder */}
       <section className="h-80 bg-gray-200 relative" id="contact-map">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-dark/5 flex items-center justify-center">
+        <a 
+          href={contact.addressLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute inset-0 bg-gradient-to-br from-primary/5 to-dark/5 flex items-center justify-center"
+          >
           <div className="text-center">
             <FiMapPin className="w-12 h-12 text-primary mx-auto mb-3" />
             <p className="text-dark font-semibold">{contact.address}</p>
             <p className="text-gray-500 text-sm mt-1">Visit us in the heart of Kashmir</p>
           </div>
-        </div>
+        </a>
       </section>
     </>
   );
@@ -127,7 +132,7 @@ function ContactInfo({ contact, companyName }: { contact: any; companyName: stri
       icon: FiMapPin,
       label: 'Visit Us',
       value: contact.address,
-      href: null,
+      href: contact.addressLink,
       description: 'Our office in Kashmir',
     },
     {
@@ -152,25 +157,39 @@ function ContactInfo({ contact, companyName }: { contact: any; companyName: stri
 
         <div className="space-y-5">
           {contactItems.map((item, i) => (
-            <div key={i} className="flex items-start gap-4 group">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 group-hover:bg-primary flex items-center justify-center flex-shrink-0 transition-all duration-300">
-                <item.icon className="w-5 h-5 text-primary group-hover:text-white transition-colors" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider">{item.label}</p>
-                {item.href ? (
-                  <a
-                    href={item.href}
-                    className="font-semibold text-dark hover:text-primary transition-colors text-sm"
-                  >
-                    {item.value}
-                  </a>
-                ) : (
+            item.href ? (
+              <a
+                key={i}
+                href={item.href}
+                target={item.href.startsWith('http') ? '_blank' : undefined}
+                rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                className="group block"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 group-hover:bg-primary flex items-center justify-center flex-shrink-0 transition-all duration-300">
+                    <item.icon className="w-5 h-5 text-primary group-hover:text-white transition-colors" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 uppercase tracking-wider">{item.label}</p>
+                    <p className="font-semibold text-dark group-hover:text-primary transition-colors text-sm">
+                      {item.value}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-0.5">{item.description}</p>
+                  </div>
+                </div>
+              </a>
+            ) : (
+              <div key={i} className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-300">
+                  <item.icon className="w-5 h-5 text-primary transition-colors" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 uppercase tracking-wider">{item.label}</p>
                   <p className="font-semibold text-dark text-sm">{item.value}</p>
-                )}
-                <p className="text-xs text-gray-400 mt-0.5">{item.description}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{item.description}</p>
+                </div>
               </div>
-            </div>
+            )
           ))}
         </div>
       </div>
