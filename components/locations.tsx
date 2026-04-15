@@ -38,17 +38,17 @@ export default function Locations() {
           {/* Section Header */}
           <div ref={ref as any} className="text-center mb-16">
             <span
-              className={`inline-block text-primary text-sm font-semibold uppercase tracking-widest mb-3 ${isVisible ? "animate-fade-up" : "opacity-0"}`}
+              className={`inline-block text-primary text-sm font-semibold uppercase tracking-widest mb-3 ${isVisible ? "animate-fade-up" : ""}`}
             >
               Destinations
             </span>
             <h2
-              className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-dark mb-5 ${isVisible ? "animate-fade-up delay-100" : "opacity-0"}`}
+              className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-dark mb-5 ${isVisible ? "animate-fade-up" : ""}`}
             >
               Explore Our <span className="gradient-text">Locations</span>
             </h2>
             <p
-              className={`text-gray-500 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed ${isVisible ? "animate-fade-up delay-200" : "opacity-0"}`}
+              className={`text-gray-500 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed ${isVisible ? "animate-fade-up" : ""}`}
             >
               From hidden meadows to famous peaks — every corner of Kashmir has
               a story waiting to be lived

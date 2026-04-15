@@ -124,7 +124,7 @@ export default function ContactAdmin() {
   };
 
   return (
-    <div className="space-y-8 pb-8">
+    <div className="space-y-8 pb-8 w-full">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">
@@ -142,7 +142,7 @@ export default function ContactAdmin() {
         </div>
       ) : (
         <div className="flex justify-center">
-          <div className="max-w-2xl w-full">
+          <div className="w-full md:max-w-2xl">
             <form
               onSubmit={handleSubmit}
               className="bg-white/80 backdrop-blur rounded-xl shadow-sm border border-gray-200 p-8 space-y-6"
@@ -230,11 +230,11 @@ export default function ContactAdmin() {
                           <p className="font-semibold text-gray-900">
                             {social.platform}
                           </p>
-                          <p className="text-sm text-gray-600 truncate">
+                          <p className="text-sm text-gray-600 truncate w-43 md:w-full">
                             {social.url}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 ">
                           <button
                             type="button"
                             onClick={() => handleEditSocial(index)}
@@ -255,7 +255,7 @@ export default function ContactAdmin() {
                   </div>
                 )}
 
-                <div className="flex gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
                   <select
                     value={newSocial.platform}
                     onChange={(e) =>

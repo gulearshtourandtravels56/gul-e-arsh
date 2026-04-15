@@ -25,7 +25,7 @@ export default function PackageList() {
   return (
     <>
       {loading && <Loader />}
-      <section className="py-32 bg-gradient-to-b from-dark to-primary-dark" id="popular-packages-section">
+      <section className="py-32 bg-gradient-to-bl from-dark to-primary-dark" id="popular-packages-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div ref={ref as any} className="text-center mb-16">

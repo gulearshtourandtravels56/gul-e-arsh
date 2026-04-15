@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { getContactInfo, getSiteImages } from "@/services/dataService";
+import { getCompanyStats, getContactInfo, getSiteImages } from "@/services/dataService";
 import { useScrollAnimation } from "@/services/hooks/useUtils";
 import { FiArrowRight } from "react-icons/fi";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import Loader from "./loader";
 export default function AboutPreview() {
   const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<any>({});
+  const [companyStats, setCompanyStats] = useState<any>([]);
   const [siteImages, setSiteImages] = useState<any>([]);
   const [ref, isVisible] = useScrollAnimation();
 
@@ -17,11 +18,15 @@ export default function AboutPreview() {
     const fetchCompanyInfo = async () => {
       setCompany(await getContactInfo());
     };
+    const fetchCompanyStats = async () => {
+      setCompanyStats(await getCompanyStats());
+    };
     const fetchSiteImages = async () => {
       setSiteImages(await getSiteImages());
     };
     setLoading(true);
     fetchCompanyInfo();
+    fetchCompanyStats();
     fetchSiteImages();
     setLoading(false);
   }, []);
@@ -49,8 +54,12 @@ export default function AboutPreview() {
               </div>
               {/* Floating stat card */}
               <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl p-6 shadow-xl shadow-black/10 animate-float">
-                <p className="text-3xl font-bold text-primary">2500+</p>
-                <p className="text-sm text-gray-500">Happy Travellers</p>
+                <p className="text-3xl font-bold text-primary">
+                  {companyStats[0]?.value || "2500+"}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {companyStats[0]?.label || "Happy Travellers"}
+                </p>
               </div>
               {/* Decorative */}
               <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary/10 rounded-2xl -z-10" />

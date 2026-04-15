@@ -181,7 +181,7 @@ export default function LocationsAdmin() {
     const isOpen = subForm?.section === section && subForm?.locationId === locationId;
     if (!isOpen) return null;
     return (
-      <div className="mt-3 bg-primary/5 border border-primary/20 rounded-lg p-4">
+      <div className="mt-3 bg-primary/5 border border-primary/20 rounded-lg p-2 md:p-4">
         {section === 'highlight' && (
           <div>
             <label className={labelCls}>Highlight</label>
@@ -247,7 +247,7 @@ export default function LocationsAdmin() {
         </div>
         <button onClick={() => { setShowForm(true); setEditingId(null); setFormData(emptyLoc); }}
           className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md hover:shadow-lg text-sm font-medium">
-          <FiPlus size={16} /> Add Location
+          <FiPlus size={16} /> Location
         </button>
       </div>
 

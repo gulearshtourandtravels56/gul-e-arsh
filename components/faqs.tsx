@@ -30,7 +30,7 @@ export default function FAQsSection() {
   return (
     <>
       {loading && <Loader />}
-      <section className="py-24 bg-gradient-to-b from-dark to-primary-dark" id="faqs-section">
+      <section className="py-24 bg-gradient-to-bl from-dark to-primary-dark" id="faqs-section">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <span className="inline-flex items-center gap-2 text-primary text-sm font-semibold uppercase tracking-widest mb-3">

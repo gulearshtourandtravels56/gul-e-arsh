@@ -97,7 +97,7 @@ export default function SiteImagesAdmin() {
           onClick={() => setShowForm(true)}
           className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md hover:shadow-lg"
         >
-          <FiPlus size={18} /> Add Image
+          <FiPlus size={18} /> Image
         </button>
       </div>
 

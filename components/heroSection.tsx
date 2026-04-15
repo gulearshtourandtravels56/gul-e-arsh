@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { getContactInfo, getSiteImages } from "@/services/dataService";
+import { getContactInfo, getSiteImages, getCompanyStats } from "@/services/dataService";
 import { useScrollAnimation } from "@/services/hooks/useUtils";
 import { FiArrowRight, FiPlay } from "react-icons/fi";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import Loader from "./loader";
 export default function HeroSection() {
   const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<any>({});
+  const [companyStats, setCompanyStats] = useState<any>([]);
   const [siteImages, setSiteImages] = useState<any>([]);
   const [ref, isVisible] = useScrollAnimation();
 
@@ -17,11 +18,15 @@ export default function HeroSection() {
     const fetchCompanyInfo = async () => {
       setCompany(await getContactInfo());
     };
+    const fetchCompanyStats = async () => {
+      setCompanyStats(await getCompanyStats());
+    };
     const fetchSiteImages = async () => {
       setSiteImages(await getSiteImages());
     };
     setLoading(true);
     fetchCompanyInfo();
+    fetchCompanyStats();
     fetchSiteImages();
     setLoading(false);
   }, []);
@@ -120,12 +125,7 @@ export default function HeroSection() {
               isVisible ? "animate-fade-up" : "opacity-0"
             }`}
           >
-            {[
-              { value: "2500+", label: "Happy Travellers" },
-              { value: "98%", label: "Satisfaction Rate" },
-              { value: "50+", label: "Expert Guides" },
-              { value: "100+", label: "Curated Packages" },
-            ].map((stat, i) => (
+            {companyStats.map((stat: any, i: number) => (
               <div
                 key={i}
                 className="glass rounded-2xl px-4 py-4 text-center hover:bg-white/15 transition-all duration-300"

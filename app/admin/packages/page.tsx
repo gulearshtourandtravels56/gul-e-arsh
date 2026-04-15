@@ -280,7 +280,7 @@ export default function PackagesAdmin() {
             const pkgDetails = details[pkg.id];
 
             return (
-              <div key={pkg.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+              <div key={pkg.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden w-90 md:w-full">
                 {/* Package Header Row */}
                 <div className="p-5 flex justify-between items-start gap-4">
                   <div className="flex-1 min-w-0">
@@ -290,7 +290,7 @@ export default function PackagesAdmin() {
                         <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">{pkg.category}</span>
                       )}
                     </div>
-                    <div className="flex gap-4 mt-1 text-sm text-gray-500">
+                    <div className="flex gap-4 mt-1 text-sm text-gray-500 w-80">
                       {pkg.location && <span>📍 {pkg.location}</span>}
                       {pkg.duration && <span>⏱ {pkg.duration}</span>}
                       {pkg.price && <span className="font-semibold text-primary">{pkg.price}</span>}

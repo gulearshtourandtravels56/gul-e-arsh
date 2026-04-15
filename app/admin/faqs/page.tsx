@@ -96,7 +96,7 @@ export default function FAQsAdmin() {
           onClick={() => setShowForm(true)}
           className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md hover:shadow-lg"
         >
-          <FiPlus size={18} /> Add FAQ
+          <FiPlus size={18} /> FAQ
         </button>
       </div>
 
