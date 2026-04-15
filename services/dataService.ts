@@ -149,3 +149,21 @@ export async function getTestimonials(): Promise<any[]> {
   const { data: testimonials } = await supabase.from("testimonials").select();
   return testimonials || [];
 }
+
+export async function addTestimonial(testimonial: {
+  name: string;
+  review: string;
+  location: string;
+  rating: number;
+}) {
+  const { data, error } = await supabase
+    .from("testimonials")
+    .insert([testimonial])
+    .select();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}

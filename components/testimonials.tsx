@@ -3,13 +3,16 @@
 import { useEffect, useState } from "react";
 import { getTestimonials } from "@/services/dataService";
 import { useScrollAnimation } from "@/services/hooks/useUtils";
-import { FiChevronLeft, FiChevronRight, FiStar } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiStar, FiPlus, FiX, FiGrid } from "react-icons/fi";
 import Loader from "./loader";
+import AddTestimonialForm from "./addTestimonialForm";
 
 export default function Testimonials() {
   const [loading, setLoading] = useState(true);
   const [testimonials, setTestimonials] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showForm, setShowForm] = useState(false);
+  const [showAllView, setShowAllView] = useState(false);
   const [ref, isVisible] = useScrollAnimation();
 
   useEffect(() => {
@@ -33,6 +36,12 @@ export default function Testimonials() {
     );
   };
 
+  const handleFormSuccess = async () => {
+    // Refresh testimonials after successful submission
+    const updatedTestimonials = await getTestimonials();
+    setTestimonials(updatedTestimonials);
+  };
+
   // Show 3 testimonials at a time on desktop, 1 on mobile
   const getVisibleTestimonials = () => {
     const items = [];
@@ -46,8 +55,20 @@ export default function Testimonials() {
   return (
     <>
       {loading && <Loader />}
-      <section className="py-32 bg-surface" id="testimonials-section">
+      <section className="py-32 bg-surface relative" id="testimonials-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* View All Button - Corner */}
+          <div className="absolute top-8 right-8 sm:top-12 sm:right-12">
+            <button
+              onClick={() => setShowAllView(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-primary-dark text-white rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-primary/30 transition-all transform hover:scale-105"
+              title="View all testimonials"
+            >
+              <FiGrid className="w-4 h-4" />
+              <span className="hidden sm:inline">All</span>
+            </button>
+          </div>
+
           {/* Section Header */}
           <div ref={ref as any} className="text-center mb-16">
             <span
@@ -73,6 +94,17 @@ export default function Testimonials() {
               Real memories from travelers who explored the mountains, sailed
               the lakes, and fell in love with Kashmir
             </p>
+
+            {/* Add Testimony Button */}
+            <button
+              onClick={() => setShowForm(true)}
+              className={`inline-flex items-center gap-2 mt-8 px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-white rounded-full font-semibold hover:shadow-lg hover:shadow-primary/30 transition-all transform hover:scale-105 ${
+                isVisible ? "animate-fade-up delay-300" : "opacity-0"
+              }`}
+            >
+              <FiPlus className="w-5 h-5" />
+              Share Your Story
+            </button>
           </div>
 
           {/* Testimonial Cards */}
@@ -128,6 +160,52 @@ export default function Testimonials() {
           )}
         </div>
       </section>
+
+      {/* Add Testimonial Form Modal */}
+      {showForm && (
+        <AddTestimonialForm
+          onClose={() => setShowForm(false)}
+          onSuccess={handleFormSuccess}
+        />
+      )}
+
+      {/* View All Testimonials Modal */}
+      {showAllView && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-primary to-primary-dark text-white p-6 flex items-center justify-between rounded-t-3xl">
+              <h3 className="text-2xl font-bold">All Testimonials</h3>
+              <button
+                onClick={() => setShowAllView(false)}
+                className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                aria-label="Close"
+              >
+                <FiX className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Testimonials Grid - Scrollable */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              {testimonials && testimonials.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {testimonials.map((testimonial, index) => (
+                    <TestimonialCard
+                      key={`all-${index}`}
+                      testimonial={testimonial}
+                      index={index}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-gray-500 text-lg">No testimonials yet. Be the first to share!</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
