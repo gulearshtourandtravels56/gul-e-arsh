@@ -10,6 +10,7 @@ import AboutPreview from '@/components/aboutPreview';
 import Footer from '@/components/footer';
 import Navbar from '@/components/navbar';
 import OurTeam from '@/components/ourTeam';
+import FAQsSection from '@/components/faqs';
 
 export const metadata: Metadata = {
   title: "Gul-e-Arsh - Kashmir Tour Packages & Travel Guide | Best Travel Agency",
@@ -24,6 +25,7 @@ export default function Home() {
       <AboutPreview />
       <PackageList />
       <ServiceList />
+      <FAQsSection />
       <Locations />
       <WhyChooseUs />
       <Testimonials />

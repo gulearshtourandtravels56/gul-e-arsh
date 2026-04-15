@@ -150,6 +150,19 @@ export async function getTestimonials(): Promise<any[]> {
   return testimonials || [];
 }
 
+export async function getFAQs(): Promise<any[]> {
+  const { data: faqs } = await supabase.from("faqs").select().order("id", { ascending: false });
+  return faqs || [];
+}
+
+export async function getGalleryItems(): Promise<any[]> {
+  const { data: gallery } = await supabase
+    .from("gallery")
+    .select()
+    .order("created_date", { ascending: false });
+  return gallery || [];
+}
+
 export async function addTestimonial(testimonial: {
   name: string;
   review: string;

@@ -34,7 +34,7 @@ export default function CTASection() {
         {/* Background */}
         <div className="absolute inset-0">
           <img
-            src={siteImages.find((img: any) => img.type === "cta")?.url}
+            src={siteImages.find((img: any) => img.key === "cta")?.url}
             alt="Kashmir landscape"
             className="w-full h-full object-cover"
           />

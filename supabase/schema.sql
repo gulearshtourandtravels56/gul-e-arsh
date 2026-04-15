@@ -142,7 +142,10 @@ create table location_packages (
 create table gallery (
   id int generated always as identity primary key,
   title text,
-  location text
+  location text,
+  description text, 
+  image text,
+  created_date date
 );
 
 -- FAQS
@@ -168,7 +171,23 @@ create table team_socials (
   url text
 );
 
+create table admins (
+  id uuid primary key default gen_random_uuid(),
+  username text unique not null,
+  password text not null,
+  name text,
+  role text default 'admin',
+  created_at timestamp default now()
+);
+
 -- INDEXES (PERFORMANCE)
 create index idx_package_id on package_highlights(package_id);
 create index idx_location_id on location_highlights(location_id);
 create index idx_location_package on location_packages(location_id, package_id);
+
+-- SEQUENCE SYNC (RUN AFTER MANUAL DATA IMPORTS)
+select setval(
+  pg_get_serial_sequence('locations', 'id'),
+  coalesce((select max(id) from locations), 0) + 1,
+  false
+);

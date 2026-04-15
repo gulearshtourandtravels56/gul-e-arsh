@@ -63,6 +63,7 @@ export default function Footer() {
   const quickLinks = [
     { to: "/", label: "Home" },
     { to: "/packages", label: "Tour Packages" },
+    { to: "/gallery", label: "Gallery" },
     { to: "/about", label: "About Us" },
     { to: "/contact", label: "Contact Us" },
   ];
