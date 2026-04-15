@@ -5,10 +5,18 @@ import PackageCard from './packageCard';
 import { useScrollAnimation } from '../services/hooks/useUtils';
 import { FiArrowRight } from 'react-icons/fi';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function PackageList() {
-  const packages = getPopularPackages();
+  const [packages, setPackages] = useState<any[]>([]);
   const [ref, isVisible] = useScrollAnimation();
+
+  useEffect(() => {
+    const fetchPopularPackages = async () => {
+      setPackages(await getPopularPackages());
+    };
+    fetchPopularPackages();
+  }, []);
 
   return (
     <section className="py-32 bg-surface" id="popular-packages-section">

@@ -10,13 +10,21 @@ import {
 import { getTeamDetails } from "../services/dataService";
 import { useScrollAnimation } from "../services/hooks/useUtils";
 import { CgProfile } from "react-icons/cg";
+import { useEffect, useState } from "react";
 
 export default function OurTeam({ color = "dark" }) {
-  const team = getTeamDetails();
+  const [team, setTeam] = useState<any[]>([]);
   const [ref, isVisible] = useScrollAnimation();
 
   const isLight = color === "light";
 
+  useEffect(() => {
+    const fetchTeamDetails = async () => {
+      setTeam(await getTeamDetails());
+    };
+    fetchTeamDetails();
+  }, []);
+  
   return (
     <section
       className={`py-32 relative overflow-hidden ${

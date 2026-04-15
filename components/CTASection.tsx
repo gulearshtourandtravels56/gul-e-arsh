@@ -1,21 +1,34 @@
 'use client';
 
-import { useScrollAnimation } from '../services/hooks/useUtils';
+import { useScrollAnimation } from '@/services/hooks/useUtils';
 import { FiArrowRight, FiPhone } from 'react-icons/fi';
-import { getPhone, getSiteImages } from '../services/dataService';
+import { getContactInfo, getSiteImages } from '@/services/dataService';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function CTASection() {
   const [ref, isVisible] = useScrollAnimation();
-  const phone = getPhone();
-  const siteImages = getSiteImages();
+  const [contact, setContact] = useState<any>({ phone: null });
+  const [siteImages, setSiteImages] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchSiteImages = async () => {
+      setSiteImages(await getSiteImages());
+    }
+    const fetchContact = async () => {
+      setContact(await getContactInfo());
+    }
+
+    fetchSiteImages();
+    fetchContact();
+  }, []);
 
   return (
     <section className="py-32 relative overflow-hidden" id="cta-section">
       {/* Background */}
       <div className="absolute inset-0">
         <img
-          src={siteImages.cta}
+          src={siteImages.find((img: any) => img.type === 'cta')?.url}
           alt="Kashmir landscape"
           className="w-full h-full object-cover"
         />
@@ -69,7 +82,7 @@ export default function CTASection() {
           </Link>
 
           <a
-            href={`tel:${phone}`}
+            href={`tel:${contact.phone}`}
             className="group flex items-center gap-3 glass text-white px-8 py-2 rounded-2xl font-semibold hover:bg-white/20 transition-all duration-300"
             id="cta-call"
           >

@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { getPackages, getSiteImages } from '../../services/dataService';
+import { useState, useMemo, useEffect } from 'react';
+import { getAllPackages, getSiteImages } from '../../services/dataService';
 import PackageCard from '../../components/packageCard';
 import { useScrollAnimation } from '../../services/hooks/useUtils';
 import { FiSearch, FiFilter, FiX } from 'react-icons/fi';
 
 export default function PackagesClient() {
-  const allPackages = getPackages();
-  const siteImages = getSiteImages();
+  const [allPackages, setAllPackages] = useState<any>([]);
+  const [siteImages, setSiteImages] = useState<any>([]); 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('default');
@@ -16,9 +16,20 @@ export default function PackagesClient() {
 
   // Extract unique categories
   const categories = useMemo(() => {
-    const cats = ['all', ...new Set(allPackages.map((p) => p.category).filter(Boolean))];
+    const cats = ['all', ...new Set(allPackages.map((p : { category: string }) => p.category).filter(Boolean))];
     return cats;
   }, [allPackages]);
+
+  useEffect(() => {
+    const fetchAllPackages = async () => {
+      setAllPackages(await getAllPackages());
+    };
+    const fetchSiteImages = async () => {
+      setSiteImages(await getSiteImages());
+    }
+    fetchAllPackages();
+    fetchSiteImages();
+  }, []);
 
   // Filter and sort
   const filteredPackages = useMemo(() => {
@@ -57,7 +68,7 @@ export default function PackagesClient() {
         <div className="absolute inset-0 bg-linear-to-br from-dark via-dark-light to-primary-dark" />
         <div
           className="absolute inset-0 opacity-10 bg-cover bg-center"
-          style={{ backgroundImage: `url(${siteImages.packagesHero})` }}
+          style={{ backgroundImage: `url(${siteImages.find((img: any) => img.key === 'packages-hero')?.url})` }}
         />
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
 
@@ -117,7 +128,7 @@ export default function PackagesClient() {
             {/* Category Filter */}
             <div className="flex items-center gap-2 flex-wrap">
               <FiFilter className="w-4 h-4 text-gray-400 hidden lg:block" />
-              {categories.map((cat) => (
+              {categories.map((cat : any) => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
@@ -128,7 +139,7 @@ export default function PackagesClient() {
                   }`}
                   id={`filter-${cat}`}
                 >
-                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  {(cat as string).charAt(0).toUpperCase() + (cat as string).slice(1)}
                 </button>
               ))}
             </div>

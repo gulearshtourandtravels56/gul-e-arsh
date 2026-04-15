@@ -1,14 +1,26 @@
 'use client';
 
 import Link from 'next/link';
-import { getCompanyDescription, getSiteImages } from '../services/dataService';
-import { useScrollAnimation } from '../services/hooks/useUtils';
+import { getContactInfo, getSiteImages } from '@/services/dataService';
+import { useScrollAnimation } from '@/services/hooks/useUtils';
 import { FiArrowRight } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
 
 export default function AboutPreview() {
-  const description = getCompanyDescription();
-  const siteImages = getSiteImages();
+  const [company, setCompany] = useState<any>({});
+  const [siteImages, setSiteImages] = useState<any>([]); 
   const [ref, isVisible] = useScrollAnimation();
+
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      setCompany(await getContactInfo());
+    }
+    const fetchSiteImages = async () => {
+      setSiteImages(await getSiteImages());
+    }
+    fetchCompanyInfo();
+    fetchSiteImages();
+  }, []);
 
   return (
     <section className="py-32 bg-white" id="about-preview-section">
@@ -20,7 +32,7 @@ export default function AboutPreview() {
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary/10">
               <img
-                src={siteImages.about}
+                src={siteImages.find((img: any) => img.key === 'about')?.url}
                 alt="Kashmir landscape"
                 className="w-full h-[400px] lg:h-[500px] object-cover"
               />
@@ -47,7 +59,7 @@ export default function AboutPreview() {
               Travel Partner
             </h2>
             <p className="text-gray-500 leading-relaxed mb-8 text-base">
-              {description}
+              {company.description}
             </p>
 
             <div className="grid grid-cols-2 gap-4 mb-8">

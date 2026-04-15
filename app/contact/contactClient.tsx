@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { getContactInfo, getCompanyName, getSiteImages } from '../../services/dataService';
+import { useEffect, useState } from 'react';
+import { getContactInfo, getCompanyName, getSiteImages, getCompanyInfo, getCompanyStats, getContactSocials } from '../../services/dataService';
 import { useScrollAnimation } from '../../services/hooks/useUtils';
 import {
   FiPhone, FiMail, FiMapPin, FiSend, FiCheck, FiInstagram, FiFacebook, FiClock,
@@ -9,10 +9,15 @@ import {
 import { FaWhatsapp } from 'react-icons/fa';
 
 export default function Contact() {
-  const contact = getContactInfo();
-  const companyName = getCompanyName();
-  const siteImages = getSiteImages();
   const [ref, isVisible] = useScrollAnimation();
+
+  const [company, setCompany] = useState<any>({
+    name: null,
+  });
+  const [contact, setContact] = useState<any>({});
+  const [contactSocials, setContactSocials] = useState<any>([]);
+  const [siteImages, setSiteImages] = useState<any>(null);
+
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -21,6 +26,25 @@ export default function Contact() {
     message: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      setCompany(await getCompanyInfo());
+    };
+    const fetchContact = async () => {
+      setContact(await getContactInfo());
+    };
+    const fetchContactSocials = async () => {
+      setContactSocials(await getContactSocials());
+    };
+    const fetchSiteImages = async () => {
+      setSiteImages(await getSiteImages());
+    };
+    fetchCompanyInfo();
+    fetchContact();
+    fetchContactSocials();
+    fetchSiteImages();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
@@ -41,7 +65,7 @@ export default function Contact() {
       <section className="relative pt-32 pb-20 overflow-hidden" id="contact-hero">
         <div className="absolute inset-0 bg-gradient-to-br from-dark via-dark-light to-primary-dark" />
         <div className="absolute inset-0 opacity-10 bg-cover bg-center" 
-            style={{ backgroundImage: `url(${siteImages.contactHero})` }}
+            style={{ backgroundImage: `url(${siteImages?.find((img: any) => img.key === 'contactHero')?.url})` }}
         />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/10 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />
 
@@ -76,7 +100,7 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
             {/* Contact Info */}
-            <ContactInfo contact={contact} companyName={companyName} />
+            <ContactInfo contact={contact} companyName={company.name} contactSocials={contactSocials} />
 
             {/* Contact Form */}
             <div className="lg:col-span-3">
@@ -92,9 +116,9 @@ export default function Contact() {
       </section>
 
       {/* Map placeholder */}
-      <section className="h-80 bg-gray-200 relative" id="contact-map">
+      {/* <section className="h-80 bg-gray-200 relative" id="contact-map">
         <a 
-          href={contact.addressLink}
+          href={contact.address_link}
           target="_blank"
           rel="noopener noreferrer"
           className="absolute inset-0 bg-gradient-to-br from-primary/5 to-dark/5 flex items-center justify-center"
@@ -105,12 +129,12 @@ export default function Contact() {
             <p className="text-gray-500 text-sm mt-1">Visit us in the heart of Kashmir</p>
           </div>
         </a>
-      </section>
+      </section> */}
     </>
   );
 }
 
-function ContactInfo({ contact, companyName }: { contact: any; companyName: string }) {
+function ContactInfo({ contact, companyName, contactSocials }: { contact: any; companyName: string, contactSocials: any }) {
   const [ref, isVisible] = useScrollAnimation();
 
   const contactItems = [
@@ -198,9 +222,9 @@ function ContactInfo({ contact, companyName }: { contact: any; companyName: stri
       <div className="bg-white rounded-3xl p-8 shadow-lg shadow-black/5">
         <h3 className="font-bold text-dark mb-4">Follow Us</h3>
         <div className="flex gap-3">
-          {contact.socials.instagram && (
+          {contactSocials.find((social : any) => social.platform === "instagram") && (
             <a
-              href={contact.socials.instagram}
+              href={contactSocials.find((social : any) => social.platform === "instagram").url}
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg shadow-purple-500/30"
@@ -209,9 +233,9 @@ function ContactInfo({ contact, companyName }: { contact: any; companyName: stri
               <FiInstagram className="w-5 h-5" />
             </a>
           )}
-          {contact.socials.facebook && (
+          {contactSocials.find((social : any) => social.platform === "facebook") && (
             <a
-              href={contact.socials.facebook}
+              href={contactSocials.find((social : any) => social.platform === "facebook").url}
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg shadow-blue-600/30"
@@ -220,9 +244,9 @@ function ContactInfo({ contact, companyName }: { contact: any; companyName: stri
               <FiFacebook className="w-5 h-5" />
             </a>
           )}
-          {contact.socials.whatsapp && (
+          {contactSocials.find((social : any) => social.platform === "whatsapp") && (
             <a
-              href={contact.socials.whatsapp}
+              href={contactSocials.find((social : any) => social.platform === "whatsapp").url}
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg shadow-green-500/30"

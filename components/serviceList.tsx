@@ -1,11 +1,19 @@
-'use client';
+"use client";
 
-import { getServices } from '../services/dataService';
-import { useScrollAnimation, getIconForKey } from '../services/hooks/useUtils';
+import { useEffect, useState } from "react";
+import { getServices } from "@/services/dataService";
+import { useScrollAnimation, getIconForKey } from "../services/hooks/useUtils";
 
 export default function ServiceList() {
-  const services = getServices();
+  const [services, setServices] = useState<any[]>([]);
   const [ref, isVisible] = useScrollAnimation();
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      setServices(await getServices());
+    };
+    fetchServices();
+  }, []);
 
   return (
     <section className="py-32 bg-white" id="services-section">
@@ -14,14 +22,14 @@ export default function ServiceList() {
         <div ref={ref as any} className="text-center mb-16">
           <span
             className={`inline-block text-primary text-sm font-semibold uppercase tracking-widest mb-3 ${
-              isVisible ? 'animate-fade-up' : 'opacity-0'
+              isVisible ? "animate-fade-up" : "opacity-0"
             }`}
           >
             What We Offer
           </span>
           <h2
             className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-dark mb-5 ${
-              isVisible ? 'animate-fade-up delay-100' : 'opacity-0'
+              isVisible ? "animate-fade-up delay-100" : "opacity-0"
             }`}
           >
             Our
@@ -29,16 +37,17 @@ export default function ServiceList() {
           </h2>
           <p
             className={`text-gray-500 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed ${
-              isVisible ? 'animate-fade-up delay-200' : 'opacity-0'
+              isVisible ? "animate-fade-up delay-200" : "opacity-0"
             }`}
           >
-            From planning to execution, we handle every detail so you can focus on enjoying the journey
+            From planning to execution, we handle every detail so you can focus
+            on enjoying the journey
           </p>
         </div>
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service, index) => (
+          {services.map((service: any, index: number) => (
             <ServiceCard key={index} service={service} index={index} />
           ))}
         </div>
@@ -54,7 +63,7 @@ function ServiceCard({ service, index }: { service: any; index: number }) {
     <div
       ref={ref as any}
       className={`group relative bg-gradient-to-br from-white to-gray-50 border border-gray-100 rounded-3xl p-8 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:-translate-y-2 overflow-hidden ${
-        isVisible ? 'animate-fade-up' : 'opacity-0'
+        isVisible ? "animate-fade-up" : "opacity-0"
       }`}
       style={{ animationDelay: `${index * 0.1}s` }}
     >

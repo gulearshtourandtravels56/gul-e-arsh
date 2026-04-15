@@ -1,15 +1,26 @@
 'use client';
 
 import Link from 'next/link';
-import { getCompanyName, getCompanyTagline, getSiteImages } from '../services/dataService';
-import { useScrollAnimation } from '../services/hooks/useUtils';
+import { getContactInfo, getSiteImages } from '@/services/dataService';
+import { useScrollAnimation } from '@/services/hooks/useUtils';
 import { FiArrowRight, FiPlay } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
 
 export default function HeroSection() {
-  const companyName = getCompanyName();
-  const tagline = getCompanyTagline();
-  const siteImages = getSiteImages();
+  const [company, setCompany] = useState<any>({});
+  const [siteImages, setSiteImages] = useState<any>([]);
   const [ref, isVisible] = useScrollAnimation();
+
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      setCompany(await getContactInfo());
+    }
+    const fetchSiteImages = async () => {
+      setSiteImages(await getSiteImages());
+    }
+    fetchCompanyInfo();
+    fetchSiteImages();
+  }, []);
 
   return (
     <section
@@ -20,7 +31,7 @@ export default function HeroSection() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src={siteImages.hero}
+          src={siteImages?.find((img: any) => img.key === 'hero')?.url}
           alt="Kashmir landscape"
           className="w-full h-full object-cover"
         />
@@ -64,7 +75,7 @@ export default function HeroSection() {
             isVisible ? 'animate-fade-up' : 'opacity-0'
           }`}
         >
-          {tagline}
+          {company.tagline}
         </p>
 
         {/* CTA Buttons */}

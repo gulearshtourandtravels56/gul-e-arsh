@@ -1,11 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import {
+  getContactInfo,
+  getLocationBestFor,
   getLocationById,
-  getPackageById,
-  getPhone,
-  getSocials,
+  getLocationRelatedPackages,
+  getLocationsHighLights,
+  getLocationWhatToSee,
+  getContactSocials,
 } from "../../../services/dataService";
 import {
   FiArrowLeft,
@@ -19,21 +22,65 @@ import {
 import Link from "next/link";
 
 export default function LocationDetails({ id }: { id: number }) {
-  const location = getLocationById(id);
-  const phone = getPhone();
-  const socials = getSocials();
-  
+  const [location, setLocation] = useState<any>({});
+  const [locationHighlights, setLocationHighlights] = useState<any>([]);
+  const [locationBestFor, setLocationBestFor] = useState<any>([]);
+  const [locationWhatToSee, setLocationWhatToSee] = useState<any>([]);
+  const [locationRelatedPackages, setLocationRelatedPackages] = useState<any[]>(
+    [],
+  );
+  const [contact, setContact] = useState<any>({ phone: null });
+  const [socials, setSocials] = useState<any>({ whatsapp: null });
 
   const [selectedItem, setSelectedItem] = useState(null) as any;
 
   useEffect(() => {
+    const fetchLocationData = async () => {
+      const locationData = await getLocationById(id);
+      setLocation(locationData);
+    };
+    const fetchLocationHighlights = async () => {
+      const locationData = await getLocationsHighLights(id);
+      setLocationHighlights(locationData);
+    };
+    const fetchLocationBestFor = async () => {
+      const locationData = await getLocationBestFor(id);
+      setLocationBestFor(locationData);
+    };
+    const fetchLocationWhatToSee = async () => {
+      const locationData = await getLocationWhatToSee(id);
+      setLocationWhatToSee(locationData);
+    };
+    const fetchRelatedPackages = async () => {
+      const relatedPackages = await getLocationRelatedPackages(id);
+      setLocationRelatedPackages(relatedPackages);
+    };
+    const fetchContactData = async () => {
+      const contactData = await getContactInfo();
+      setContact(contactData);
+    };
+    const fetchSocialsData = async () => {
+      const socialsData = await getContactSocials();
+      setSocials(socialsData);
+    };
+
+    fetchLocationData();
+    fetchLocationHighlights();
+    fetchLocationBestFor();
+    fetchLocationWhatToSee();
+    fetchRelatedPackages();
+    fetchContactData();
+    fetchSocialsData();
+  }, [id]);
+
+  useEffect(() => {
     if (selectedItem) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [selectedItem]);
 
@@ -56,10 +103,6 @@ export default function LocationDetails({ id }: { id: number }) {
       </div>
     );
   }
-
-  const relatedPackages = (location.relatedPackageIds || [])
-    .map((id) => getPackageById(id))
-    .filter(Boolean);
 
   return (
     <>
@@ -109,13 +152,13 @@ export default function LocationDetails({ id }: { id: number }) {
               <div className="glass px-4 py-2 rounded-xl flex items-center gap-2">
                 <FiCalendar className="w-4 h-4 text-primary-light" />
                 <span className="text-white text-sm font-semibold">
-                  {location.bestTime}
+                  {location.best_time}
                 </span>
               </div>
               <div className="glass px-4 py-2 rounded-xl flex items-center gap-2">
                 <FiMapPin className="w-4 h-4 text-primary-light" />
                 <span className="text-white text-sm font-semibold">
-                  {location.distanceFromSrinagar} from Srinagar
+                  {location.distance_from_srinagar} from Srinagar
                 </span>
               </div>
             </div>
@@ -137,9 +180,9 @@ export default function LocationDetails({ id }: { id: number }) {
                 <p className="text-gray-600 leading-relaxed text-base mb-4">
                   {location.description}
                 </p>
-                {location.longDescription && (
+                {location.long_description && (
                   <p className="text-gray-500 leading-relaxed text-sm">
-                    {location.longDescription}
+                    {location.long_description}
                   </p>
                 )}
               </div>
@@ -150,7 +193,7 @@ export default function LocationDetails({ id }: { id: number }) {
                   Top Highlights
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {location.highlights.map((h, i) => (
+                  {locationHighlights && (locationHighlights || []).map((h: any, i: number) => (
                     <div
                       key={i}
                       className="flex items-center gap-3 p-3 bg-primary/5 rounded-xl"
@@ -158,7 +201,9 @@ export default function LocationDetails({ id }: { id: number }) {
                       <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shrink-0">
                         <FiCheck className="w-3.5 h-3.5 text-white" />
                       </div>
-                      <span className="text-dark text-sm font-medium">{h}</span>
+                      <span className="text-dark text-sm font-medium">
+                        {h.highlight}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -171,14 +216,17 @@ export default function LocationDetails({ id }: { id: number }) {
                     What to See & Do
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    {location.whatToSee.map((item, i) => (
+                    {locationWhatToSee.map((item: any, i: number) => (
                       <div
                         key={i}
                         className="group rounded-2xl overflow-hidden border border-gray-100 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/8 hover:scale-105 transition-all duration-300"
                       >
                         {/* Image */}
                         {item.image && (
-                          <div className="relative h-36 overflow-hidden cursor-pointer" onClick={() => setSelectedItem(item)}>
+                          <div
+                            className="relative h-36 overflow-hidden cursor-pointer"
+                            onClick={() => setSelectedItem(item)}
+                          >
                             <img
                               src={item.image}
                               alt={item.title}
@@ -223,18 +271,18 @@ export default function LocationDetails({ id }: { id: number }) {
               )}
 
               {/* Best For */}
-              {location.bestFor && (
+              {locationBestFor && (
                 <div className="bg-white rounded-3xl p-8 shadow-sm">
                   <h2 className="text-2xl font-bold text-dark mb-5">
                     Best For
                   </h2>
                   <div className="flex flex-wrap gap-3">
-                    {location.bestFor.map((tag, i) => (
+                    {locationBestFor.map((item: any, i: number) => (
                       <span
                         key={i}
                         className="px-5 py-2.5 bg-primary/8 text-primary font-semibold text-sm rounded-xl border border-primary/10"
                       >
-                        {tag}
+                        {item.tag}
                       </span>
                     ))}
                   </div>
@@ -242,54 +290,56 @@ export default function LocationDetails({ id }: { id: number }) {
               )}
 
               {/* Related Packages */}
-              {relatedPackages.length > 0 && (
-                <div>
-                  <h2 className="text-2xl font-bold text-dark mb-6">
-                    Packages Visiting{" "}
-                    <span className="gradient-text">{location.name}</span>
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    {relatedPackages.map((pkg : any) => (
-                      <Link
-                        key={pkg.id}
-                        href={`/packages/${pkg.id}`}
-                        className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:scale-105 transition-all duration-400 hover:-translate-y-1"
-                      >
-                        <div className="relative h-36 overflow-hidden">
-                          <img
-                            src={pkg.image}
-                            alt={pkg.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
-                          <div className="absolute bottom-3 left-3 right-3">
-                            <p className="text-white font-bold text-sm">
-                              {pkg.title}
-                            </p>
+              {locationRelatedPackages &&
+                locationRelatedPackages.length > 0 && (
+                  <div>
+                    <h2 className="text-2xl font-bold text-dark mb-6">
+                      Packages Visiting{" "}
+                      <span className="gradient-text">{location.name}</span>
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                      {locationRelatedPackages.map((pkg: any) => (
+                        <Link
+                          key={pkg.id}
+                          href={`/packages/${pkg.package_id}`}
+                          className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:scale-105 transition-all duration-400 hover:-translate-y-1"
+                        >
+                          <div className="relative h-36 overflow-hidden">
+                            <img
+                              src={pkg.packages.image}
+                              alt={pkg.packages.title}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+                            <div className="absolute bottom-3 left-3 right-3">
+                              <p className="text-white font-bold text-sm">
+                                {pkg.packages.title}
+                              </p>
+                            </div>
+                            <div className="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-lg">
+                              {pkg.packages.price}
+                            </div>
                           </div>
-                          <div className="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-lg">
-                            {pkg.price}
+                          <div className="p-4 flex items-center justify-between">
+                            <div>
+                              <p className="text-xs text-gray-400">
+                                {pkg.packages.duration}
+                              </p>
+                              <p className="text-xs text-gray-400">
+                                {pkg.packages.location}
+                              </p>
+                            </div>
+                            <span className="text-primary text-xs font-semibold group-hover:translate-x-1 transition-transform duration-200 flex items-center gap-1">
+                              View{" "}
+                              <FiArrowLeft className="w-3 h-3 rotate-180" />
+                            </span>
                           </div>
-                        </div>
-                        <div className="p-4 flex items-center justify-between">
-                          <div>
-                            <p className="text-xs text-gray-400">
-                              {pkg.duration}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              {pkg.location}
-                            </p>
-                          </div>
-                          <span className="text-primary text-xs font-semibold group-hover:translate-x-1 transition-transform duration-200 flex items-center gap-1">
-                            View <FiArrowLeft className="w-3 h-3 rotate-180" />
-                          </span>
-                        </div>
-                      </Link>
-                    ))}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
 
             {/* ── Right: Sticky sidebar ── */}
@@ -305,7 +355,11 @@ export default function LocationDetails({ id }: { id: number }) {
                   </p>
 
                   <a
-                    href={`${socials?.whatsapp}?text=Hi! I'm interested in visiting ${location.name}. Can you help me plan a trip?`}
+                    href={`${
+                      (Array.isArray(socials) ? socials : []).find(
+                        (scl) => scl.platform === "whatsapp",
+                      )?.url
+                    }?text=Hi! I'm interested in visiting ${location.name}. Can you help me plan a trip?`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-white px-5 py-3.5 rounded-xl font-semibold mb-3 hover:bg-[#128C7E] transition-colors duration-200"
@@ -315,7 +369,7 @@ export default function LocationDetails({ id }: { id: number }) {
                     Enquire on WhatsApp
                   </a>
                   <a
-                    href={`tel:${phone}`}
+                    href={`tel:${contact.phone}`}
                     className="flex items-center justify-center gap-2 w-full bg-primary text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-primary-dark transition-colors duration-200"
                     id={`location-call-${id}`}
                   >
@@ -337,12 +391,12 @@ export default function LocationDetails({ id }: { id: number }) {
                     />
                     <InfoRow
                       label="Best Time"
-                      value={location.bestTime}
+                      value={location.best_time}
                       icon={<FiCalendar />}
                     />
                     <InfoRow
                       label="Distance"
-                      value={location.distanceFromSrinagar + " from Srinagar"}
+                      value={location.distance_from_srinagar + " from Srinagar"}
                       icon={<FiMapPin />}
                     />
                   </div>
@@ -363,8 +417,14 @@ export default function LocationDetails({ id }: { id: number }) {
 
       {/* Modal for What to See & Do images */}
       {selectedItem && (
-        <div className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-999 p-4" onClick={() => setSelectedItem(null)}>
-          <div className="relative w-[90vw] h-auto max-w-162.5 max-h-[90vh] bg-transparent rounded-lg sm:rounded-lg overflow-auto" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-999 p-4"
+          onClick={() => setSelectedItem(null)}
+        >
+          <div
+            className="relative w-[90vw] h-auto max-w-162.5 max-h-[90vh] bg-transparent rounded-lg sm:rounded-lg overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="relative w-full h-full overflow-y-auto">
               <img
                 src={selectedItem.image}
@@ -389,7 +449,15 @@ export default function LocationDetails({ id }: { id: number }) {
   );
 }
 
-function InfoRow({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
+function InfoRow({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+}) {
   return (
     <div className="flex items-start gap-3">
       <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-primary text-sm">

@@ -2,9 +2,11 @@
 
 import {
   getPackageById,
-  getPhone,
-  getEmail,
-  getSocials,
+  getContactInfo,
+  getContactSocials,
+  getPackageHighlights,
+  getPackageItinerary,
+  getPackageInclusions,
 } from "../../../services/dataService";
 import { useScrollAnimation } from "../../../services/hooks/useUtils";
 import {
@@ -17,16 +19,54 @@ import {
 } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function PackageDetails({ id }: { id: number }) {
-  const pkg = getPackageById(id);
-  const phone = getPhone();
-  const email = getEmail();
-  const socials = getSocials();
-  const whatappLink = `${socials?.whatsapp}?text=Hi, I'm interested in the ${pkg?.title} package (${pkg?.duration}, ${pkg?.price}). Please share more details.`;
+  const [contact, setContact] = useState<any>({});
+  const [packageInfo, setPackageInfo] = useState<any>([]);
+  const [packageHighlights, setPackageHighlights] = useState<any>([]);
+  const [packageItinerary, setPackageItinerary] = useState<any>([]);
+  const [packageInclusions, setPackageInclusions] = useState<any>([]);
+  const [socials, setSocials] = useState<any>({});
+
   const [ref, isVisible] = useScrollAnimation();
 
-  if (!pkg) {
+  useEffect(() => {
+    const fetchPackageData = async () => {
+      setPackageInfo(await getPackageById(id));
+    };
+    const fetchPackageHighlights = async () => {
+      setPackageHighlights(await getPackageHighlights(id));
+    };
+    const fetchPackageItinerary = async () => {
+      setPackageItinerary(await getPackageItinerary(id));
+    };
+    const fetchPackageInclusions = async () => {
+      setPackageInclusions(await getPackageInclusions(id));
+    };
+    const fetchContact = async () => {
+      setContact(await getContactInfo());
+    };
+    const fetchContactSocials = async () => {
+      setSocials(await getContactSocials());
+    };
+
+    fetchPackageData();
+    fetchPackageHighlights();
+    fetchPackageItinerary();
+    fetchPackageInclusions();
+    fetchContact();
+    fetchContactSocials();
+  }, [id]);
+
+  const whatsappLink = (pkg: any, socials: any[]) => {
+    const baseUrl = (Array.isArray(socials) ? socials : []).find(
+      (scl) => scl.platform === "whatsapp",
+    )?.url;
+
+    return `${baseUrl}?text=Hi, I'm interested in the ${pkg.title} package.`;
+  };
+  if (!packageInfo) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="text-center">
@@ -57,8 +97,8 @@ export default function PackageDetails({ id }: { id: number }) {
         id="package-detail-hero"
       >
         <img
-          src={pkg.image}
-          alt={pkg.title}
+          src={packageInfo.image}
+          alt={packageInfo.title}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-black/10" />
@@ -76,22 +116,22 @@ export default function PackageDetails({ id }: { id: number }) {
         {/* Title overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
           <div className="max-w-7xl mx-auto">
-            {pkg.category && (
+            {packageInfo.category && (
               <span className="inline-block glass text-white text-xs font-semibold uppercase tracking-wider px-4 py-1.5 rounded-lg mb-4">
-                {pkg.category}
+                {packageInfo.category}
               </span>
             )}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3">
-              {pkg.title}
+              {packageInfo.title}
             </h1>
             <div className="flex flex-wrap items-center gap-4 text-white/80 text-sm">
               <span className="flex items-center gap-1.5">
                 <FiMapPin className="w-4 h-4" />
-                {pkg.location}
+                {packageInfo.location}
               </span>
               <span className="flex items-center gap-1.5">
                 <FiClock className="w-4 h-4" />
-                {pkg.duration}
+                {packageInfo.duration}
               </span>
             </div>
           </div>
@@ -117,12 +157,12 @@ export default function PackageDetails({ id }: { id: number }) {
                   About This Package
                 </h2>
                 <p className="text-gray-500 leading-relaxed">
-                  {pkg.description}
+                  {packageInfo.description}
                 </p>
               </div>
 
               {/* Highlights */}
-              {pkg.highlights && pkg.highlights.length > 0 && (
+              {packageInfo.highlights && packageInfo.highlights.length > 0 && (
                 <div
                   className={`bg-white rounded-3xl p-8 shadow-lg shadow-black/5 ${
                     isVisible ? "animate-fade-up delay-100" : "opacity-0"
@@ -132,25 +172,27 @@ export default function PackageDetails({ id }: { id: number }) {
                     Tour Highlights
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {pkg.highlights.map((highlight, i) => (
-                      <div
-                        key={i}
-                        className="flex items-start gap-3 p-4 bg-primary/5 rounded-xl"
-                      >
-                        <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
-                          <FiCheck className="w-3.5 h-3.5 text-white" />
+                    {packageHighlights.map(
+                      (highlight: { highlight: string }, i: number) => (
+                        <div
+                          key={i}
+                          className="flex items-start gap-3 p-4 bg-primary/5 rounded-xl"
+                        >
+                          <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
+                            <FiCheck className="w-3.5 h-3.5 text-white" />
+                          </div>
+                          <span className="text-sm font-medium text-dark">
+                            {highlight.highlight}
+                          </span>
                         </div>
-                        <span className="text-sm font-medium text-dark">
-                          {highlight}
-                        </span>
-                      </div>
-                    ))}
+                      ),
+                    )}
                   </div>
                 </div>
               )}
 
               {/* Itinerary */}
-              {pkg.itinerary && pkg.itinerary.length > 0 && (
+              {packageItinerary && packageItinerary.length > 0 && (
                 <div
                   className={`bg-white rounded-3xl p-8 shadow-lg shadow-black/5 ${
                     isVisible ? "animate-fade-up delay-200" : "opacity-0"
@@ -160,11 +202,11 @@ export default function PackageDetails({ id }: { id: number }) {
                     Day-wise Itinerary
                   </h2>
                   <div className="space-y-4">
-                    {pkg.itinerary.map((day, i) => (
+                    {packageItinerary.map((itinerary: any, i: number) => (
                       <ItineraryDay
                         key={i}
-                        day={day}
-                        isLast={i === pkg.itinerary.length - 1}
+                        itinerary={itinerary}
+                        isLast={i === packageItinerary.length - 1}
                       />
                     ))}
                   </div>
@@ -172,7 +214,7 @@ export default function PackageDetails({ id }: { id: number }) {
               )}
 
               {/* Inclusions */}
-              {pkg.inclusions && pkg.inclusions.length > 0 && (
+              {packageInclusions && packageInclusions.length > 0 && (
                 <div
                   className={`bg-white rounded-3xl p-8 shadow-lg shadow-black/5 ${
                     isVisible ? "animate-fade-up delay-300" : "opacity-0"
@@ -182,10 +224,12 @@ export default function PackageDetails({ id }: { id: number }) {
                     What's Included
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {pkg.inclusions.map((item, i) => (
+                    {packageInclusions.map((item: any, i: number) => (
                       <div key={i} className="flex items-center gap-3">
                         <FiCheck className="w-4 h-4 text-primary shrink-0" />
-                        <span className="text-sm text-gray-600">{item}</span>
+                        <span className="text-sm text-gray-600">
+                          {item.inclusion}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -204,7 +248,7 @@ export default function PackageDetails({ id }: { id: number }) {
                 <div className="text-center mb-6">
                   <p className="text-sm text-gray-500 mb-1">Starting from</p>
                   <p className="text-4xl font-bold gradient-text">
-                    {pkg.price}
+                    {packageInfo.price}
                   </p>
                   <p className="text-xs text-gray-400 mt-1">per person</p>
                 </div>
@@ -213,20 +257,20 @@ export default function PackageDetails({ id }: { id: number }) {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-500">Duration</span>
                     <span className="font-semibold text-dark">
-                      {pkg.duration}
+                      {packageInfo.duration}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-500">Location</span>
                     <span className="font-semibold text-dark">
-                      {pkg.location.split(",")[0]}
+                      {packageInfo?.location?.split(",")[0]}
                     </span>
                   </div>
-                  {pkg.category && (
+                  {packageInfo.category && (
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-500">Category</span>
                       <span className="font-semibold text-dark capitalize">
-                        {pkg.category}
+                        {packageInfo.category}
                       </span>
                     </div>
                   )}
@@ -235,7 +279,7 @@ export default function PackageDetails({ id }: { id: number }) {
                 {/* Enquiry Buttons */}
                 <div className="space-y-3">
                   <a
-                    href={whatappLink}
+                    href={whatsappLink(packageInfo, socials)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-3 w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-green-500/30"
@@ -246,7 +290,7 @@ export default function PackageDetails({ id }: { id: number }) {
                   </a>
 
                   <a
-                    href={`tel:${phone}`}
+                    href={`tel:${contact.phone}`}
                     className="flex items-center justify-center gap-3 w-full bg-linear-to-r from-primary to-primary-dark text-white py-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-primary/30"
                     id="enquiry-call"
                   >
@@ -255,7 +299,7 @@ export default function PackageDetails({ id }: { id: number }) {
                   </a>
 
                   <a
-                    href={`mailto:${email}?subject=Enquiry about ${pkg.title}&body=Hi, I'm interested in the ${pkg.title} package (${pkg.duration}, ${pkg.price}). Please share more details.`}
+                    href={`mailto:${contact.email}?subject=Enquiry about ${packageInfo.title}&body=Hi, I'm interested in the ${packageInfo.title} package (${packageInfo.duration}, ${packageInfo.price}). Please share more details.`}
                     className="flex items-center justify-center gap-3 w-full bg-gray-100 hover:bg-gray-200 text-dark py-4 rounded-xl font-semibold transition-all duration-300"
                     id="enquiry-email"
                   >
@@ -272,21 +316,31 @@ export default function PackageDetails({ id }: { id: number }) {
   );
 }
 
-function ItineraryDay({ day, isLast }: { day: any; isLast: boolean }) {
+function ItineraryDay({
+  itinerary,
+  isLast,
+}: {
+  itinerary: any;
+  isLast: boolean;
+}) {
   return (
     <div className="flex gap-4">
       {/* Timeline */}
       <div className="flex flex-col items-center">
         <div className="w-10 h-10 rounded-full bg-linear-to-br from-primary to-primary-dark flex items-center justify-center text-white text-sm font-bold shrink-0 shadow-lg shadow-primary/20">
-          {day.day}
+          {itinerary.day}
         </div>
         {!isLast && <div className="w-0.5 flex-1 bg-primary/20 mt-2" />}
       </div>
 
       {/* Content */}
       <div className="pb-8">
-        <h3 className="text-base font-bold text-dark mb-2">{day.title}</h3>
-        <p className="text-sm text-gray-500 leading-relaxed">{day.details}</p>
+        <h3 className="text-base font-bold text-dark mb-2">
+          {itinerary.title}
+        </h3>
+        <p className="text-sm text-gray-500 leading-relaxed">
+          {itinerary.details}
+        </p>
       </div>
     </div>
   );

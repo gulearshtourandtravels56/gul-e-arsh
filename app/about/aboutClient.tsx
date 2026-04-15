@@ -1,55 +1,95 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
+import Link from "next/link";
 import {
-  getCompanyInfo, getCompanyDescription, getCompanyMission,
-  getServices, getWhyChooseUs, getCompanyStats,
+  getCompanyInfo,
+  getServices,
+  getWhyChooseUs,
+  getCompanyStats,
   getSiteImages,
-} from '../../services/dataService';
-import { useScrollAnimation, getIconForKey } from '../../services/hooks/useUtils';
-import { FiArrowRight } from 'react-icons/fi';
-import OurTeam from '@/components/ourTeam';
+} from "@/services/dataService";
+import {
+  useScrollAnimation,
+  getIconForKey,
+} from "@/services/hooks/useUtils";
+import { FiArrowRight } from "react-icons/fi";
+import OurTeam from "@/components/ourTeam";
+import { useEffect, useState } from "react";
 
 export default function About() {
-  const company = getCompanyInfo();
-  const description = getCompanyDescription();
-  const mission = getCompanyMission();
-  const services = getServices();
-  const whyChooseUs = getWhyChooseUs();
-  const stats = getCompanyStats();
+
   const [ref, isVisible] = useScrollAnimation();
 
-  const siteImages = getSiteImages(); 
+  const [company, setCompany] = useState<any>({
+    name: null,
+    tagline: null,
+    description: null,
+    mission: null,
+  });
+  const [services, setServices] = useState<any>([]);
+  const [whyChooseUs, setWhyChooseUs ] = useState<any>([]);
+  const [stats, setStats] = useState<any>([]);
+  const [siteImages, setSiteImages] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      setCompany(await getCompanyInfo());
+    };
+    const fetchServices = async () => {
+      setServices(await getServices());
+    };
+    const fetchWhyChooseUs = async () => {
+      setWhyChooseUs(await getWhyChooseUs());
+    };
+    const fetchCompanyStats = async () => {
+      setStats(await getCompanyStats());
+    };
+    const fetchSiteImages = async () => {
+      setSiteImages(await getSiteImages());
+    };
+    fetchCompanyInfo();
+    fetchServices();
+    fetchWhyChooseUs();
+    fetchCompanyStats();
+    fetchSiteImages();
+  }, []);
 
   return (
     <>
       {/* Page Hero */}
       <section className="relative pt-32 pb-20 overflow-hidden" id="about-hero">
         <div className="absolute inset-0 bg-gradient-to-br from-dark via-dark-light to-primary-dark" />
-        <div className="absolute inset-0 opacity-10 bg-cover bg-center"
-          style={{backgroundImage: `url(${siteImages.aboutHero})`}}
+        <div
+          className="absolute inset-0 opacity-10 bg-cover bg-center"
+          style={{ backgroundImage: `url(${siteImages.find((img : any) => img.key === "aboutHero")?.url})` }}
         />
         <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
 
-        <div ref={ref as any} className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div
+          ref={ref as any}
+          className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        >
           <span
             className={`inline-block text-primary-light text-sm font-semibold uppercase tracking-widest mb-3 ${
-              isVisible ? 'animate-fade-up' : 'opacity-0'
+              isVisible ? "animate-fade-up" : "opacity-0"
             }`}
           >
             About Us
           </span>
           <h1
             className={`text-4xl sm:text-5xl font-bold text-white mb-5 ${
-              isVisible ? 'animate-fade-up delay-100' : 'opacity-0'
+              isVisible ? "animate-fade-up delay-100" : "opacity-0"
             }`}
           >
             Get to Know
-            <span className="text-primary-light"> {company.name.split(' ').slice(0, 1).join(' ')}</span>
+            <span className="text-primary-light">
+              {" "}
+              {company.name?.split(" ")[0]}
+            </span>
           </h1>
           <p
             className={`text-gray-400 max-w-2xl mx-auto text-lg ${
-              isVisible ? 'animate-fade-up delay-200' : 'opacity-0'
+              isVisible ? "animate-fade-up delay-200" : "opacity-0"
             }`}
           >
             {company.tagline}
@@ -62,10 +102,10 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Image */}
-            <ImageSection />
+            <ImageSection siteImages={siteImages} />
 
             {/* Content */}
-            <StoryContent description={description} mission={mission} />
+            <StoryContent description={company.description} mission={company.mission} />
           </div>
         </div>
       </section>
@@ -83,7 +123,7 @@ export default function About() {
             description="Comprehensive travel solutions tailored to your needs"
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-            {services.map((service, i) => (
+            {services.map((service : any, i : number) => (
               <AboutServiceCard key={i} service={service} index={i} />
             ))}
           </div>
@@ -91,7 +131,10 @@ export default function About() {
       </section>
 
       {/* Why Us */}
-      <section className="py-20 bg-dark relative overflow-hidden" id="about-why-us">
+      <section
+        className="py-20 bg-dark relative overflow-hidden"
+        id="about-why-us"
+      >
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
@@ -102,21 +145,25 @@ export default function About() {
             dark
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-            {whyChooseUs.map((reason, i) => (
+            {whyChooseUs.map((reason : any, i : number) => (
               <WhyUsCard key={i} reason={reason} index={i} />
             ))}
           </div>
         </div>
       </section>
-      <OurTeam color='light'/>
+      <OurTeam color="light" />
       {/* CTA */}
-      <section className="py-20 bg-gradient-to-r from-primary to-primary-dark text-center" id="about-cta">
+      <section
+        className="py-20 bg-gradient-to-r from-primary to-primary-dark text-center"
+        id="about-cta"
+      >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-5">
             Ready to Start Your Kashmir Journey?
           </h2>
           <p className="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
-            Let's plan your perfect trip together. Our team is ready to make your travel dreams come true.
+            Let's plan your perfect trip together. Our team is ready to make
+            your travel dreams come true.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -139,29 +186,43 @@ export default function About() {
   );
 }
 
-function SectionHeader({ label, title, highlight, description, dark = false }: { label: string; title: string; highlight: string; description: string; dark?: boolean }) {
+function SectionHeader({
+  label,
+  title,
+  highlight,
+  description,
+  dark = false,
+}: {
+  label: string;
+  title: string;
+  highlight: string;
+  description: string;
+  dark?: boolean;
+}) {
   const [ref, isVisible] = useScrollAnimation();
   return (
     <div ref={ref as any} className="text-center">
       <span
         className={`inline-block text-sm font-semibold uppercase tracking-widest mb-3 ${
-          dark ? 'text-primary-light' : 'text-primary'
-        } ${isVisible ? 'animate-fade-up' : 'opacity-0'}`}
+          dark ? "text-primary-light" : "text-primary"
+        } ${isVisible ? "animate-fade-up" : "opacity-0"}`}
       >
         {label}
       </span>
       <h2
         className={`text-3xl sm:text-4xl font-bold mb-5 ${
-          dark ? 'text-white' : 'text-dark'
-        } ${isVisible ? 'animate-fade-up delay-100' : 'opacity-0'}`}
+          dark ? "text-white" : "text-dark"
+        } ${isVisible ? "animate-fade-up delay-100" : "opacity-0"}`}
       >
         {title}
-        <span className={dark ? 'text-primary-light' : 'gradient-text'}>{highlight}</span>
+        <span className={dark ? "text-primary-light" : "gradient-text"}>
+          {highlight}
+        </span>
       </h2>
       <p
         className={`max-w-2xl mx-auto text-lg ${
-          dark ? 'text-gray-400' : 'text-gray-500'
-        } ${isVisible ? 'animate-fade-up delay-200' : 'opacity-0'}`}
+          dark ? "text-gray-400" : "text-gray-500"
+        } ${isVisible ? "animate-fade-up delay-200" : "opacity-0"}`}
       >
         {description}
       </p>
@@ -169,13 +230,16 @@ function SectionHeader({ label, title, highlight, description, dark = false }: {
   );
 }
 
-function ImageSection() {
+function ImageSection({siteImages } : {siteImages : any[]}) {
   const [ref, isVisible] = useScrollAnimation();
   return (
-    <div ref={ref as any} className={`relative ${isVisible ? 'animate-fade-left' : 'opacity-0'}`}>
+    <div
+      ref={ref as any}
+      className={`relative ${isVisible ? "animate-fade-left" : "opacity-0"}`}
+    >
       <div className="rounded-3xl overflow-hidden shadow-2xl shadow-primary/10">
         <img
-          src={getSiteImages().about}
+          src={siteImages.find((img: any) => img.key === "about")?.url}
           alt="Kashmir mountains"
           className="w-full h-[400px] lg:h-[500px] object-cover"
         />
@@ -190,10 +254,19 @@ function ImageSection() {
   );
 }
 
-function StoryContent({ description, mission }: { description: string; mission: string }) {
+function StoryContent({
+  description,
+  mission,
+}: {
+  description: string;
+  mission: string;
+}) {
   const [ref, isVisible] = useScrollAnimation();
   return (
-    <div ref={ref as any} className={`${isVisible ? 'animate-fade-right delay-200' : 'opacity-0'}`}>
+    <div
+      ref={ref as any}
+      className={`${isVisible ? "animate-fade-right delay-200" : "opacity-0"}`}
+    >
       <span className="inline-block text-primary text-sm font-semibold uppercase tracking-widest mb-3">
         Our Story
       </span>
@@ -232,10 +305,12 @@ function StatsSection({ stats }: { stats: any[] }) {
           {stats.map((stat, i) => (
             <div
               key={i}
-              className={`text-center ${isVisible ? 'animate-fade-up' : 'opacity-0'}`}
+              className={`text-center ${isVisible ? "animate-fade-up" : "opacity-0"}`}
               style={{ animationDelay: `${i * 0.15}s` }}
             >
-              <p className="text-3xl sm:text-4xl font-bold text-white mb-2">{stat.value}</p>
+              <p className="text-3xl sm:text-4xl font-bold text-white mb-2">
+                {stat.value}
+              </p>
               <p className="text-white/70 text-sm">{stat.label}</p>
             </div>
           ))}
@@ -251,15 +326,19 @@ function AboutServiceCard({ service, index }: { service: any; index: number }) {
     <div
       ref={ref as any}
       className={`group bg-surface rounded-2xl p-6 hover:bg-white hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 hover:-translate-y-1 ${
-        isVisible ? 'animate-fade-up' : 'opacity-0'
+        isVisible ? "animate-fade-up" : "opacity-0"
       }`}
       style={{ animationDelay: `${index * 0.1}s` }}
     >
       <div className="w-12 h-12 rounded-xl bg-primary/10 group-hover:bg-primary flex items-center justify-center text-xl mb-4 transition-all duration-300">
-        <span className="group-hover:scale-125 transition-transform">{getIconForKey(service.icon)}</span>
+        <span className="group-hover:scale-125 transition-transform">
+          {getIconForKey(service.icon)}
+        </span>
       </div>
       <h3 className="font-bold text-dark mb-2">{service.title}</h3>
-      <p className="text-gray-500 text-sm leading-relaxed">{service.description}</p>
+      <p className="text-gray-500 text-sm leading-relaxed">
+        {service.description}
+      </p>
     </div>
   );
 }
@@ -270,7 +349,7 @@ function WhyUsCard({ reason, index }: { reason: any; index: number }) {
     <div
       ref={ref as any}
       className={`group bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-primary/30 transition-all duration-500 hover:-translate-y-1 ${
-        isVisible ? 'animate-fade-up' : 'opacity-0'
+        isVisible ? "animate-fade-up" : "opacity-0"
       }`}
       style={{ animationDelay: `${index * 0.1}s` }}
     >
@@ -280,7 +359,9 @@ function WhyUsCard({ reason, index }: { reason: any; index: number }) {
       <h3 className="font-bold text-white mb-2 group-hover:text-primary-light transition-colors">
         {reason.title}
       </h3>
-      <p className="text-gray-400 text-sm leading-relaxed">{reason.description}</p>
+      <p className="text-gray-400 text-sm leading-relaxed">
+        {reason.description}
+      </p>
     </div>
   );
 }

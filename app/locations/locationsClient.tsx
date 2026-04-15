@@ -1,7 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { getLocations, getSiteImages } from "../../services/dataService";
+import { useEffect, useState } from "react";
+import {
+  getLocationBestFor,
+  getLocations,
+  getLocationsHighLights,
+  getSiteImages,
+} from "../../services/dataService";
 import { useScrollAnimation } from "../../services/hooks/useUtils";
 import {
   FiMapPin,
@@ -13,15 +18,53 @@ import {
 import Link from "next/link";
 
 export default function LocationsClient() {
-  const allLocations = getLocations();
-  const siteImages = getSiteImages();
+  const [rawLocations, setRawLocations] = useState<any[]>([]);
+  const [allLocations, setAllLocations] = useState<any[]>([]);
+  const [siteImages, setSiteImages] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const locations = await getLocations();
+      const images: any[] = await getSiteImages();
+
+      setRawLocations(locations);
+      setSiteImages(images);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (allLocations.length || !rawLocations.length) return;
+
+    const processLocations = async () => {
+      const locationsTemp = await Promise.all(
+        rawLocations.map(async (loc) => {
+          const [bestFor, highlights] = await Promise.all([
+            getLocationBestFor(loc.id),
+            getLocationsHighLights(loc.id),
+          ]);
+
+          return {
+            ...loc,
+            bestFor: bestFor.map((b: any) => b.tag),
+            highlights: highlights.map((h: any) => h.highlight),
+          };
+        }),
+      );
+      setAllLocations(locationsTemp);
+    };
+
+    processLocations();
+  }, [rawLocations]);
+
   const [search, setSearch] = useState("");
 
   const filtered = allLocations.filter(
     (loc) =>
       loc.name.toLowerCase().includes(search.toLowerCase()) ||
       loc.subtitle.toLowerCase().includes(search.toLowerCase()) ||
-      (loc.bestFor || []).some((b) =>
+      (loc.bestFor || []).some((b: any) =>
         b.toLowerCase().includes(search.toLowerCase()),
       ),
   );
@@ -35,7 +78,9 @@ export default function LocationsClient() {
       >
         <div className="absolute inset-0">
           <img
-            src={siteImages.locationsHero}
+            src={
+              siteImages.find((img: any) => img.key === "locationsHero")?.url
+            }
             alt="Kashmir destinations"
             className="w-full h-full object-cover"
           />
@@ -102,7 +147,6 @@ export default function LocationsClient() {
 
 function LocationFullCard({ loc, index }: { loc: any; index: number }) {
   const [ref, isVisible] = useScrollAnimation();
-
   return (
     <div
       ref={ref as any}
@@ -117,8 +161,9 @@ function LocationFullCard({ loc, index }: { loc: any; index: number }) {
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" 
-          onClick={()=>{
+        <div
+          className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"
+          onClick={() => {
             window.location.href = `/locations/${loc.id}`;
           }}
         />
@@ -134,7 +179,9 @@ function LocationFullCard({ loc, index }: { loc: any; index: number }) {
         {/* Best time */}
         <div className="absolute top-3 right-3 glass px-3 py-1.5 rounded-xl flex items-center gap-1.5">
           <FiCalendar className="w-3 h-3 text-white/80" />
-          <span className="text-white text-xs font-medium">{loc.bestTime}</span>
+          <span className="text-white text-xs font-medium">
+            {loc.best_time}
+          </span>
         </div>
 
         {/* Location name overlay */}
@@ -152,14 +199,16 @@ function LocationFullCard({ loc, index }: { loc: any; index: number }) {
 
         {/* Highlights */}
         <div className="flex flex-wrap gap-1.5 mb-4">
-          {loc.highlights.map((h: string, i: number) => (
-            <span
-              key={i}
-              className="px-2.5 py-1 bg-primary/8 text-primary text-xs font-medium rounded-lg"
-            >
-              {h}
-            </span>
-          ))}
+          {loc &&
+            loc.highlights &&
+            loc?.highlights?.map((h: string, i: number) => (
+              <span
+                key={i}
+                className="px-2.5 py-1 bg-primary/8 text-primary text-xs font-medium rounded-lg"
+              >
+                {h}
+              </span>
+            ))}
         </div>
 
         {/* Best for tags */}
@@ -183,7 +232,7 @@ function LocationFullCard({ loc, index }: { loc: any; index: number }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5 text-gray-400 text-xs">
             <FiMapPin className="w-3.5 h-3.5" />
-            {loc.distanceFromSrinagar} from Srinagar
+            {loc.distance_from_srinagar} from Srinagar
           </div>
           <Link
             href={`/locations/${loc.id}`}

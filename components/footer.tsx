@@ -1,29 +1,73 @@
-'use client';
+"use client";
 
-import { getCompanyName, getCompanyTagline, getContactInfo, getServices } from '../services/dataService';
-import { FiPhone, FiMail, FiMapPin, FiChevronRight, FiInstagram, FiFacebook, FiArrowUp } from 'react-icons/fi';
-import { FaWhatsapp } from 'react-icons/fa';
-import Link from 'next/link';
+import {
+  getCompanyInfo,
+  getContactInfo,
+  getContactSocials,
+  getServices,
+} from "@/services/dataService";
+import {
+  FiPhone,
+  FiMail,
+  FiMapPin,
+  FiChevronRight,
+  FiInstagram,
+  FiFacebook,
+  FiArrowUp,
+} from "react-icons/fi";
+import { FaWhatsapp } from "react-icons/fa";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import logo from '@/public/assets/images/logo.png';
 
 export default function Footer() {
-  const companyName = getCompanyName();
-  const tagline = getCompanyTagline();
-  const contact = getContactInfo();
-  const services = getServices();
+  const [company, setCompany] = useState<any>({
+    name: null
+  });
+  const [services, setServices] = useState<any>([]);
+  const [contact, setContact] = useState<any>({
+    phone: null,
+    email: null,
+    address: null,
+    address_link: null,
+  });
+  const [contactSocials, setContactSocials] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      setCompany(await getCompanyInfo());
+    };
+    const fetchContact = async () => {
+      setContact(await getContactInfo());
+    };
+    const fetchContactSocials = async () => {
+      setContactSocials(await getContactSocials());
+    };
+    const fetchServices = async () => {
+      setServices(await getServices());
+    };
+    fetchCompanyInfo();
+    fetchContact();
+    fetchContactSocials();
+    fetchServices();
+  }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const quickLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/packages', label: 'Tour Packages' },
-    { to: '/about', label: 'About Us' },
-    { to: '/contact', label: 'Contact Us' },
+    { to: "/", label: "Home" },
+    { to: "/packages", label: "Tour Packages" },
+    { to: "/about", label: "About Us" },
+    { to: "/contact", label: "Contact Us" },
   ];
 
   return (
-    <footer className="relative bg-dark text-white overflow-hidden" id="main-footer">
+    <footer
+      className="relative bg-dark text-white overflow-hidden"
+      id="main-footer"
+    >
       {/* Decorative gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
@@ -34,22 +78,28 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-primary/30">
-                G
-              </div>
+              <img 
+                src={logo.src} 
+                alt={'G'}
+                className="w-11 h-11 rounded-xl  flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-primary/30" 
+              />
               <div>
-                <h3 className="text-base font-bold">{companyName.split(' ').slice(0, 1).join(' ')}</h3>
-                <p className="text-[10px] text-primary-light tracking-wider uppercase">Tour & Travels</p>
+                <h3 className="text-base font-bold">
+                  {company.name?.split(" ").slice(0, 1).join(" ")}
+                </h3>
+                <p className="text-[10px] text-primary-light tracking-wider uppercase">
+                  Tour & Travels
+                </p>
               </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              {tagline}
+              {company.tagline}
             </p>
             {/* Social Links */}
             <div className="flex gap-3">
-              {contact.socials.instagram && (
+              {contactSocials.find((social : any) => social.platform === "instagram") && (
                 <a
-                  href={contact.socials.instagram}
+                  href={contactSocials.find((social : any) => social.platform === "instagram").url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-xl bg-white/5 hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
@@ -58,9 +108,9 @@ export default function Footer() {
                   <FiInstagram className="w-4 h-4" />
                 </a>
               )}
-              {contact.socials.facebook && (
+              {contactSocials.find((social : any) => social.platform === "facebook") && (
                 <a
-                  href={contact.socials.facebook}
+                  href={contactSocials.find((social : any) => social.platform === "facebook").url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-xl bg-white/5 hover:bg-blue-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
@@ -69,9 +119,9 @@ export default function Footer() {
                   <FiFacebook className="w-4 h-4" />
                 </a>
               )}
-              {contact.socials.whatsapp && (
+              {contactSocials.find((social : any) => social.platform === "whatsapp") && (
                 <a
-                  href={contact.socials.whatsapp}
+                  href={contactSocials.find((social : any) => social.platform === "whatsapp").url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-xl bg-white/5 hover:bg-green-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
@@ -156,7 +206,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href={contact.addressLink}
+                  href={contact.address_link}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-start gap-3 text-gray-400 hover:text-primary-light transition-colors text-sm group"
@@ -178,7 +228,8 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-white/10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-gray-500 text-xs text-center sm:text-left">
-              © {new Date().getFullYear()} {companyName}. All rights reserved. Crafted with ❤️ in Kashmir.
+              © {new Date().getFullYear()} {company.name}. All rights reserved.
+              Crafted with ❤️ in Kashmir.
             </p>
             <button
               onClick={scrollToTop}

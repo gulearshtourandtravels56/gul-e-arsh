@@ -1,12 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { getLocations } from '../services/dataService';
-import { useScrollAnimation } from '../services/hooks/useUtils';
+import { getLocations, getLocationsHighLights } from '@/services/dataService';
+import { useScrollAnimation } from '@/services/hooks/useUtils';
 import { FiMapPin, FiCalendar, FiArrowRight } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
 
 export default function Locations() {
-  const locations = getLocations().slice(0, 3); // Show first 3 on home
+  const [locations, setLocations] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      setLocations((await getLocations()).slice(0,3));
+    }
+    fetchLocations();
+  }, []);
   const [ref, isVisible] = useScrollAnimation();
 
   if (!locations.length) return null;
@@ -56,7 +64,14 @@ export default function Locations() {
 
 function LocationCard({ loc, index }: { loc: any; index: number }) {
   const [ref, isVisible] = useScrollAnimation();
+  const [locationHighlights, setLocationHighlights] = useState<any[]>([]);
 
+  useEffect(() => {
+    const fetchLocationHighlights = async () => {
+      setLocationHighlights(await getLocationsHighLights(loc.id));
+    }
+    fetchLocationHighlights();
+  }, [loc.id]);
   return (
     <Link
       href={`/locations/${loc.id}`}
@@ -94,10 +109,10 @@ function LocationCard({ loc, index }: { loc: any; index: number }) {
 
         {/* Highlights */}
         <div className="flex flex-wrap gap-1.5">
-        {loc.highlights.slice(0, 2).map((h: string) => (
-            <span key={h} className="glass px-2.5 py-1 rounded-md text-white text-[11px] font-medium">{h}</span>
+        {locationHighlights.slice(0, 2).map((h: any, index: number) => (
+            <span key={index} className="glass px-2.5 py-1 rounded-md text-white text-[11px] font-medium">{h.highlight}</span>
           ))}
-          <span className="glass px-2.5 py-1 rounded-md text-white text-[11px] font-medium">+{loc.highlights.length - 2} more</span>
+          <span className="glass px-2.5 py-1 rounded-md text-white text-[11px] font-medium">+{locationHighlights?.length - 2} more</span>
         </div>
 
         {/* CTA */}
