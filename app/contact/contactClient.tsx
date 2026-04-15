@@ -1,16 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getContactInfo, getCompanyName, getSiteImages, getCompanyInfo, getCompanyStats, getContactSocials } from '../../services/dataService';
-import { useScrollAnimation } from '../../services/hooks/useUtils';
+import { getContactInfo, getSiteImages, getCompanyInfo, getContactSocials } from '@/services/dataService';
+import { useScrollAnimation } from '@/services/hooks/useUtils';
 import {
   FiPhone, FiMail, FiMapPin, FiSend, FiCheck, FiInstagram, FiFacebook, FiClock,
 } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
+import Loader from '@/components/loader';
 
 export default function Contact() {
   const [ref, isVisible] = useScrollAnimation();
 
+  const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<any>({
     name: null,
   });
@@ -40,10 +42,12 @@ export default function Contact() {
     const fetchSiteImages = async () => {
       setSiteImages(await getSiteImages());
     };
+    setLoading(true)
     fetchCompanyInfo();
     fetchContact();
     fetchContactSocials();
     fetchSiteImages();
+    setLoading(false)
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -62,6 +66,7 @@ export default function Contact() {
   return (
     <>
       {/* Page Hero */}
+      {loading && <Loader />}
       <section className="relative pt-32 pb-20 overflow-hidden" id="contact-hero">
         <div className="absolute inset-0 bg-gradient-to-br from-dark via-dark-light to-primary-dark" />
         <div className="absolute inset-0 opacity-10 bg-cover bg-center" 

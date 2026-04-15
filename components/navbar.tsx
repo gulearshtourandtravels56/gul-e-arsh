@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { getCompanyInfo, getContactInfo, getSiteImages } from "../services/dataService";
+import { getCompanyInfo, getContactInfo } from "@/services/dataService";
 import { FiMenu, FiX, FiPhone } from "react-icons/fi";
 import Link from "next/link";
 import logo from "@/public/assets/images/logo.png";
+import Loader from "./loader";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -16,6 +17,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<any>({
     name: null,
     tagline: null,
@@ -24,21 +26,17 @@ export default function Navbar() {
     phone: null,
   });
   const [contact, setContact] = useState<any>({ phone: null });
-
-  const [siteImages, setSiteImages] = useState<any>([]);
   useEffect(() => {
+    setLoading(true);
     const fetchCompanyInfo = async () => {
       setCompany(await getCompanyInfo());
     };
     const fetchContact = async () => {
       setContact(await getContactInfo());
     };
-    const fetchSiteImages = async () => {
-      setSiteImages(await getSiteImages());
-    };
     fetchCompanyInfo();
     fetchContact();
-    fetchSiteImages();
+    setLoading(false);
   }, []);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -71,6 +69,7 @@ export default function Navbar() {
   return (
     <>
       {/* Navbar bar — always on top */}
+      {loading && <Loader />}
       <header
         id="main-navbar"
         className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-500 ${

@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { getAllPackages, getSiteImages } from '../../services/dataService';
-import PackageCard from '../../components/packageCard';
-import { useScrollAnimation } from '../../services/hooks/useUtils';
+import { getAllPackages, getSiteImages } from '@/services/dataService';
+import PackageCard from '@/components/packageCard';
+import { useScrollAnimation } from '@/services/hooks/useUtils';
 import { FiSearch, FiFilter, FiX } from 'react-icons/fi';
+import Loader from '@/components/loader';
 
 export default function PackagesClient() {
+  const [loading, setLoading] = useState(true);
   const [allPackages, setAllPackages] = useState<any>([]);
   const [siteImages, setSiteImages] = useState<any>([]); 
   const [searchQuery, setSearchQuery] = useState('');
@@ -27,8 +29,10 @@ export default function PackagesClient() {
     const fetchSiteImages = async () => {
       setSiteImages(await getSiteImages());
     }
+    setLoading(true)
     fetchAllPackages();
     fetchSiteImages();
+    setLoading(false)
   }, []);
 
   // Filter and sort
@@ -64,6 +68,7 @@ export default function PackagesClient() {
   return (
     <>
       {/* Page Hero */}
+      {loading && <Loader />}
       <section className="relative pt-32 pb-20 overflow-hidden" id="packages-hero">
         <div className="absolute inset-0 bg-linear-to-br from-dark via-dark-light to-primary-dark" />
         <div

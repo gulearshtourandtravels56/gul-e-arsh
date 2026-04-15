@@ -15,11 +15,13 @@ import {
 import { FiArrowRight } from "react-icons/fi";
 import OurTeam from "@/components/ourTeam";
 import { useEffect, useState } from "react";
+import Loader from "@/components/loader";
 
 export default function About() {
 
   const [ref, isVisible] = useScrollAnimation();
 
+  const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<any>({
     name: null,
     tagline: null,
@@ -47,16 +49,19 @@ export default function About() {
     const fetchSiteImages = async () => {
       setSiteImages(await getSiteImages());
     };
+    setLoading(true);
     fetchCompanyInfo();
     fetchServices();
     fetchWhyChooseUs();
     fetchCompanyStats();
     fetchSiteImages();
+    setLoading(false);
   }, []);
 
   return (
     <>
       {/* Page Hero */}
+      {loading && <Loader />}
       <section className="relative pt-32 pb-20 overflow-hidden" id="about-hero">
         <div className="absolute inset-0 bg-gradient-to-br from-dark via-dark-light to-primary-dark" />
         <div

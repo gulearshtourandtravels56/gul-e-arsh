@@ -3,62 +3,71 @@
 import { useEffect, useState } from "react";
 import { getWhyChooseUs } from "@/services/dataService";
 import { useScrollAnimation, getIconForKey } from "@/services/hooks/useUtils";
+import Loader from "./loader";
 
 export default function WhyChooseUs() {
+  const [loading, setLoading] = useState(true);
   const [whyChooseUs, setWhyChooseUs] = useState<any>([]);
   const [ref, isVisible] = useScrollAnimation();
   useEffect(() => {
     const fetchWhyChooseUs = async () => {
+      setLoading(true);
       setWhyChooseUs(await getWhyChooseUs());
+      setLoading(false);
     };
+    setLoading(true);
     fetchWhyChooseUs();
+    setLoading(false);
   }, []);
 
   return (
-    <section
-      className="py-32 bg-dark relative overflow-hidden"
-      id="why-choose-us-section"
-    >
-      {/* Decorative background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/5 pointer-events-none" />
-      <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
-      <div className="absolute bottom-0 right-0 w-80 h-80 bg-secondary/5 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />
+    <>
+      {loading && <Loader />}
+      <section
+        className="py-32 bg-dark relative overflow-hidden"
+        id="why-choose-us-section"
+      >
+        {/* Decorative background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/5 pointer-events-none" />
+        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-secondary/5 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div ref={ref as any} className="text-center mb-16">
-          <span
-            className={`inline-block text-primary-light text-sm font-semibold uppercase tracking-widest mb-3 ${
-              isVisible ? "animate-fade-up" : "opacity-0"
-            }`}
-          >
-            Why Choose Us
-          </span>
-          <h2
-            className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-5 ${
-              isVisible ? "animate-fade-up delay-100" : "opacity-0"
-            }`}
-          >
-            The
-            <span className="text-primary-light"> Gul-e-Arsh</span> Difference
-          </h2>
-          <p
-            className={`text-gray-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed ${
-              isVisible ? "animate-fade-up delay-200" : "opacity-0"
-            }`}
-          >
-            We don't just plan trips — we create memories that last a lifetime
-          </p>
-        </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div ref={ref as any} className="text-center mb-16">
+            <span
+              className={`inline-block text-primary-light text-sm font-semibold uppercase tracking-widest mb-3 ${
+                isVisible ? "animate-fade-up" : "opacity-0"
+              }`}
+            >
+              Why Choose Us
+            </span>
+            <h2
+              className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-5 ${
+                isVisible ? "animate-fade-up delay-100" : "opacity-0"
+              }`}
+            >
+              The
+              <span className="text-primary-light"> Gul-e-Arsh</span> Difference
+            </h2>
+            <p
+              className={`text-gray-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed ${
+                isVisible ? "animate-fade-up delay-200" : "opacity-0"
+              }`}
+            >
+              We don't just plan trips — we create memories that last a lifetime
+            </p>
+          </div>
 
-        {/* Reasons Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {whyChooseUs.map((reason: any, index: number) => (
-            <ReasonCard key={index} reason={reason} index={index} />
-          ))}
+          {/* Reasons Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {whyChooseUs.map((reason: any, index: number) => (
+              <ReasonCard key={index} reason={reason} index={index} />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 

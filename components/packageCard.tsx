@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useScrollAnimation } from "../services/hooks/useUtils";
+import { useScrollAnimation } from "@/services/hooks/useUtils";
 import { FiMapPin, FiClock, FiArrowRight } from "react-icons/fi";
 
 export default function PackageCard({

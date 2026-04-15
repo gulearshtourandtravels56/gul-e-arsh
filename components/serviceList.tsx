@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { getServices } from "@/services/dataService";
 import { useScrollAnimation, getIconForKey } from "../services/hooks/useUtils";
+import Loader from "./loader";
 
 export default function ServiceList() {
+  const [loading, setLoading] = useState(true);
   const [services, setServices] = useState<any[]>([]);
   const [ref, isVisible] = useScrollAnimation();
 
@@ -12,47 +14,52 @@ export default function ServiceList() {
     const fetchServices = async () => {
       setServices(await getServices());
     };
+    setLoading(true);
     fetchServices();
+    setLoading(false);
   }, []);
 
   return (
-    <section className="py-32 bg-white" id="services-section">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div ref={ref as any} className="text-center mb-16">
-          <span
-            className={`inline-block text-primary text-sm font-semibold uppercase tracking-widest mb-3 ${
-              isVisible ? "animate-fade-up" : "opacity-0"
-            }`}
-          >
-            What We Offer
-          </span>
-          <h2
-            className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-dark mb-5 ${
-              isVisible ? "animate-fade-up delay-100" : "opacity-0"
-            }`}
-          >
-            Our
-            <span className="gradient-text"> Services</span>
-          </h2>
-          <p
-            className={`text-gray-500 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed ${
-              isVisible ? "animate-fade-up delay-200" : "opacity-0"
-            }`}
-          >
-            From planning to execution, we handle every detail so you can focus
-            on enjoying the journey
-          </p>
-        </div>
+    <>
+      {loading && <Loader />}
+      <section className="py-32 bg-white" id="services-section">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div ref={ref as any} className="text-center mb-16">
+            <span
+              className={`inline-block text-primary text-sm font-semibold uppercase tracking-widest mb-3 ${
+                isVisible ? "animate-fade-up" : "opacity-0"
+              }`}
+            >
+              What We Offer
+            </span>
+            <h2
+              className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-dark mb-5 ${
+                isVisible ? "animate-fade-up delay-100" : "opacity-0"
+              }`}
+            >
+              Our
+              <span className="gradient-text"> Services</span>
+            </h2>
+            <p
+              className={`text-gray-500 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed ${
+                isVisible ? "animate-fade-up delay-200" : "opacity-0"
+              }`}
+            >
+              From planning to execution, we handle every detail so you can
+              focus on enjoying the journey
+            </p>
+          </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service: any, index: number) => (
-            <ServiceCard key={index} service={service} index={index} />
-          ))}
+          {/* Services Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service: any, index: number) => (
+              <ServiceCard key={index} service={service} index={index} />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 

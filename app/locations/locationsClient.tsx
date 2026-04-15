@@ -6,8 +6,8 @@ import {
   getLocations,
   getLocationsHighLights,
   getSiteImages,
-} from "../../services/dataService";
-import { useScrollAnimation } from "../../services/hooks/useUtils";
+} from "@/services/dataService";
+import { useScrollAnimation } from "@/services/hooks/useUtils";
 import {
   FiMapPin,
   FiCalendar,
@@ -16,8 +16,10 @@ import {
   FiTriangle,
 } from "react-icons/fi";
 import Link from "next/link";
+import Loader from "@/components/loader";
 
 export default function LocationsClient() {
+  const [loading, setLoading] = useState(true);
   const [rawLocations, setRawLocations] = useState<any[]>([]);
   const [allLocations, setAllLocations] = useState<any[]>([]);
   const [siteImages, setSiteImages] = useState<any[]>([]);
@@ -30,8 +32,9 @@ export default function LocationsClient() {
       setRawLocations(locations);
       setSiteImages(images);
     };
-
+    setLoading(true)
     fetchData();
+    setLoading(false)
   }, []);
 
   useEffect(() => {
@@ -54,8 +57,9 @@ export default function LocationsClient() {
       );
       setAllLocations(locationsTemp);
     };
-
+    setLoading(true)
     processLocations();
+    setLoading(false)
   }, [rawLocations]);
 
   const [search, setSearch] = useState("");
@@ -72,6 +76,7 @@ export default function LocationsClient() {
   return (
     <>
       {/* Hero Banner */}
+      {loading && <Loader />}
       <section
         className="relative pt-32 pb-20 overflow-hidden"
         id="locations-hero"

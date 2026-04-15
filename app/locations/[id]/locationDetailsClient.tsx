@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import {
   getContactInfo,
   getLocationBestFor,
@@ -9,7 +9,7 @@ import {
   getLocationsHighLights,
   getLocationWhatToSee,
   getContactSocials,
-} from "../../../services/dataService";
+} from "@/services/dataService";
 import {
   FiArrowLeft,
   FiMapPin,
@@ -22,6 +22,7 @@ import {
 import Link from "next/link";
 
 export default function LocationDetails({ id }: { id: number }) {
+  const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState<any>({});
   const [locationHighlights, setLocationHighlights] = useState<any>([]);
   const [locationBestFor, setLocationBestFor] = useState<any>([]);
@@ -63,7 +64,7 @@ export default function LocationDetails({ id }: { id: number }) {
       const socialsData = await getContactSocials();
       setSocials(socialsData);
     };
-
+    setLoading(true)
     fetchLocationData();
     fetchLocationHighlights();
     fetchLocationBestFor();
@@ -71,6 +72,7 @@ export default function LocationDetails({ id }: { id: number }) {
     fetchRelatedPackages();
     fetchContactData();
     fetchSocialsData();
+    setLoading(false)
   }, [id]);
 
   useEffect(() => {

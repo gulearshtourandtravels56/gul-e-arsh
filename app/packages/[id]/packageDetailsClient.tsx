@@ -7,8 +7,8 @@ import {
   getPackageHighlights,
   getPackageItinerary,
   getPackageInclusions,
-} from "../../../services/dataService";
-import { useScrollAnimation } from "../../../services/hooks/useUtils";
+} from "@/services/dataService";
+import { useScrollAnimation } from "@/services/hooks/useUtils";
 import {
   FiMapPin,
   FiClock,
@@ -20,8 +20,10 @@ import {
 import { FaWhatsapp } from "react-icons/fa";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Loader from "@/components/loader";
 
 export default function PackageDetails({ id }: { id: number }) {
+  const [loading, setLoading] = useState(true);
   const [contact, setContact] = useState<any>({});
   const [packageInfo, setPackageInfo] = useState<any>([]);
   const [packageHighlights, setPackageHighlights] = useState<any>([]);
@@ -51,12 +53,14 @@ export default function PackageDetails({ id }: { id: number }) {
       setSocials(await getContactSocials());
     };
 
+    setLoading(true)
     fetchPackageData();
     fetchPackageHighlights();
     fetchPackageItinerary();
     fetchPackageInclusions();
     fetchContact();
     fetchContactSocials();
+    setLoading(false)
   }, [id]);
 
   const whatsappLink = (pkg: any, socials: any[]) => {
@@ -66,7 +70,7 @@ export default function PackageDetails({ id }: { id: number }) {
 
     return `${baseUrl}?text=Hi, I'm interested in the ${pkg.title} package.`;
   };
-  if (!packageInfo) {
+  if (!packageInfo && !loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="text-center">
@@ -92,6 +96,7 @@ export default function PackageDetails({ id }: { id: number }) {
   return (
     <>
       {/* Hero Banner */}
+      {loading && <Loader />}
       <section
         className="relative h-[50vh] min-h-100 overflow-hidden"
         id="package-detail-hero"
