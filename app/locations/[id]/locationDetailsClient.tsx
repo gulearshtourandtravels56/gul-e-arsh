@@ -20,6 +20,7 @@ import {
   FiPhone,
 } from "react-icons/fi";
 import Link from "next/link";
+import Loader from "@/components/loader";
 
 export default function LocationDetails({ id }: { id: number }) {
   const [loading, setLoading] = useState(true);
@@ -86,7 +87,7 @@ export default function LocationDetails({ id }: { id: number }) {
     };
   }, [selectedItem]);
 
-  if (!location) {
+  if (!loading && !location) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center pt-24 px-4">
         <p className="text-6xl mb-4">🏔️</p>
@@ -109,6 +110,7 @@ export default function LocationDetails({ id }: { id: number }) {
   return (
     <>
       {/* ── Hero ── */}
+      {loading && <Loader />}
       <section
         className="relative h-[60vh] min-h-105 overflow-hidden"
         id="location-detail-hero"
@@ -212,7 +214,7 @@ export default function LocationDetails({ id }: { id: number }) {
               </div>
 
               {/* What to See */}
-              {location.whatToSee && location.whatToSee.length > 0 && (
+              {locationWhatToSee && locationWhatToSee.length > 0 && (
                 <div className="bg-white rounded-3xl p-8 shadow-sm">
                   <h2 className="text-2xl font-bold text-dark mb-6">
                     What to See & Do
