@@ -63,7 +63,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         } hidden md:flex bg-linear-to-b from-slate-950 via-slate-900 to-slate-800 text-white transition-all duration-300 fixed h-screen flex-col shadow-2xl z-40`}
       >
         {/* Header */}
-        <div className="p-6 border-b border-slate-700/50 flex items-center justify-between">
+        <div className="px-[18px] py-3 border-b border-slate-700/50 flex items-center justify-between">
           {sidebarOpen && (
             <div>
               <h1 className="text-2xl font-bold bg-linear-to-r from-primary to-primary-light bg-clip-text text-transparent">
@@ -81,7 +81,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {sections.map((section) => {
             const isActive = pathname === section.href;
             return (
@@ -99,33 +99,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </Link>
             );
           })}
-        </nav>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-slate-700/50">
-          <button
-            onClick={handleLogout}
-            className="w-full mb-2 flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-500/15 transition text-sm text-slate-300 hover:text-red-300 font-medium"
-          >
-            <FiLogOut className="text-lg" />
-            {sidebarOpen && <span>Logout</span>}
-          </button>
-          <Link
-            href="/"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-700/50 transition text-sm text-slate-300 hover:text-white font-medium"
-          >
-            <FiGlobe className="text-lg" />
-            {sidebarOpen && <span>View Site</span>}
-          </Link>
-        </div>
+          {/* Footer Actions */}
+          <div className="pt-3 border-t border-slate-700/50 space-y-1">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-500/15 transition text-sm text-slate-300 hover:text-red-300 font-medium"
+            >
+              <FiLogOut className="text-lg" />
+              {sidebarOpen && <span>Logout</span>}
+            </button>
+            <Link
+              href="/"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-700/50 transition text-sm text-slate-300 hover:text-white font-medium"
+            >
+              <FiGlobe className="text-lg" />
+              {sidebarOpen && <span>View Site</span>}
+            </Link>
+          </div>
+        </nav>
       </aside>
 
       {/* Main Content */}
       <main className={`flex-1 transition-all duration-300 flex flex-col ${sidebarOpen ? 'md:ml-72' : 'md:ml-20'} ml-0`}>
         <div className="md:hidden bg-slate-950 text-white p-4 flex items-center justify-between sticky top-0 z-30 shadow-lg">
           <div>
-            <h1 className="text-lg font-semibold">Admin</h1>
-            <p className="text-xs text-slate-400">Gul-e-Arsh</p>
+            <h1 className="text-lg font-semibold">Gul-e-Arsh</h1>
           </div>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

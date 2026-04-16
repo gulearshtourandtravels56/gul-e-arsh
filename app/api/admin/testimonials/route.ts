@@ -1,13 +1,17 @@
 import { supabase } from '@/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const { data, error } = await supabase.from('testimonials').select('*');
 
     if (error) throw error;
 
-    return NextResponse.json({ data, success: true });
+    const response = NextResponse.json({ data, success: true });
+    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    return response;
   } catch (error) {
     console.error('Error fetching testimonials:', error);
     return NextResponse.json({ error: 'Failed to fetch testimonials' }, { status: 500 });

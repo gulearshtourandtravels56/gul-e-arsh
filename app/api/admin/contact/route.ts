@@ -39,20 +39,49 @@ export async function PUT(request: NextRequest) {
     if (error) throw error;
 
     // Update social links
-    if (social_links) {
-      // Delete existing social links
-      await supabase.from('social_links').delete().eq('contact_id', 1);
+    if (social_links !== undefined) {
+      // Get existing social links
+      const { data: existing, error: existingError } = await supabase
+        .from('social_links')
+        .select('id')
+        .eq('contact_id', 1);
 
-      // Insert new ones
-      if (social_links.length > 0) {
-        const socialData = social_links.map((social: any) => ({
+      if (existingError) throw existingError;
+
+      const existingIds = existing.map((e: any) => e.id);
+      const newIds = social_links.filter((s: any) => s.id).map((s: any) => s.id);
+      const toDelete = existingIds.filter((id: number) => !newIds.includes(id));
+
+      // Delete removed social links
+      if (toDelete.length > 0) {
+        const { error: deleteError } = await supabase
+          .from('social_links')
+          .delete()
+          .in('id', toDelete);
+        if (deleteError) throw deleteError;
+      }
+
+      // Update existing social links
+      for (const social of social_links.filter((s: any) => s.id)) {
+        const { error: updateError } = await supabase
+          .from('social_links')
+          .update({ platform: social.platform, url: social.url })
+          .eq('id', social.id);
+        if (updateError) throw updateError;
+      }
+
+      // Insert new social links
+      const toInsert = social_links.filter((s: any) => !s.id);
+      if (toInsert.length > 0) {
+        const socialData = toInsert.map((s: any) => ({
           contact_id: 1,
-          platform: social.platform,
-          url: social.url,
+          platform: s.platform,
+          url: s.url,
         }));
-
-        const { error: socialError } = await supabase.from('social_links').insert(socialData);
-        if (socialError) throw socialError;
+        const { error: insertError } = await supabase
+          .from('social_links')
+          .insert(socialData);
+        if (insertError) throw insertError;
       }
     }
 

@@ -98,7 +98,7 @@ export default function WhyChooseUsAdmin() {
           onClick={() => setShowForm(true)}
           className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md hover:shadow-lg"
         >
-          <FiPlus size={18} /> Add Item
+          <FiPlus size={18} /> Item
         </button>
       </div>
 

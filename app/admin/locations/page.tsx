@@ -57,7 +57,7 @@ export default function LocationsAdmin() {
   /* ─── Fetch ─── */
   const fetchLocations = async () => {
     try {
-      const res = await fetch('/api/admin/locations');
+      const res = await fetch('/api/admin/locations', { cache: 'no-store' });
       const result = await res.json();
       setLocations(result.data || []);
     } catch (e) { console.error(e); }
@@ -113,7 +113,7 @@ export default function LocationsAdmin() {
   const handleDeleteLocation = async (id: number) => {
     try {
       await fetch(`/api/admin/locations/${id}`, { method: 'DELETE' });
-      fetchLocations();
+      await fetchLocations();
       if (expandedId === id) setExpandedId(null);
     } catch (e) { console.error(e); }
     finally { setDeleteConfirm(null); }
@@ -319,7 +319,7 @@ export default function LocationsAdmin() {
                             {!(subForm?.section === 'highlight' && subForm.locationId === loc.id) && (
                               <button onClick={() => openSubForm('highlight', loc.id)}
                                 className="flex items-center gap-1 text-xs bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary-dark transition font-medium">
-                                <FiPlus size={12} /> Add Highlight
+                                <FiPlus size={12} /> Highlight
                               </button>
                             )}
                           </div>
@@ -358,7 +358,7 @@ export default function LocationsAdmin() {
                             {!(subForm?.section === 'best_for' && subForm.locationId === loc.id) && (
                               <button onClick={() => openSubForm('best_for', loc.id)}
                                 className="flex items-center gap-1 text-xs bg-orange-500 text-white px-3 py-1.5 rounded-lg hover:bg-orange-600 transition font-medium">
-                                <FiPlus size={12} /> Add Tag
+                                <FiPlus size={12} /> Tag
                               </button>
                             )}
                           </div>
@@ -397,7 +397,7 @@ export default function LocationsAdmin() {
                             {!(subForm?.section === 'what_to_see' && subForm.locationId === loc.id) && (
                               <button onClick={() => openSubForm('what_to_see', loc.id)}
                                 className="flex items-center gap-1 text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition font-medium">
-                                <FiPlus size={12} /> Add Attraction
+                                <FiPlus size={12} /> Attraction
                               </button>
                             )}
                           </div>

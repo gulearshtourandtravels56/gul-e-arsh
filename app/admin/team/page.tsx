@@ -39,7 +39,7 @@ export default function TeamAdmin() {
   /* ─── Fetch ─── */
   const fetchTeam = async () => {
     try {
-      const res = await fetch('/api/admin/team');
+      const res = await fetch('/api/admin/team', { cache: 'no-store' });
       const result = await res.json();
       setTeam(result.data || []);
     } catch (e) { console.error(e); }
@@ -49,7 +49,7 @@ export default function TeamAdmin() {
   const fetchSocials = async (memberId: number) => {
     setSocialsLoading(true);
     try {
-      const res = await fetch(`/api/admin/team/${memberId}/socials`);
+      const res = await fetch(`/api/admin/team/${memberId}/socials`, { cache: 'no-store' });
       const result = await res.json();
       setSocials(prev => ({ ...prev, [memberId]: result.data || [] }));
     } catch (e) { console.error(e); }
@@ -142,7 +142,7 @@ export default function TeamAdmin() {
         </div>
         <button onClick={() => { setShowForm(true); setEditingId(null); setFormData(emptyMember); }}
           className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md hover:shadow-lg text-sm font-medium">
-          <FiPlus size={16} /> Add Member
+          <FiPlus size={16} /> Member
         </button>
       </div>
 
@@ -212,7 +212,7 @@ export default function TeamAdmin() {
                       {!(socialForm?.memberId === member.id) && (
                         <button onClick={() => openSocialForm(member.id)}
                           className="flex items-center gap-1 text-xs bg-purple-600 text-white px-3 py-1.5 rounded-lg hover:bg-purple-700 transition font-medium">
-                          <FiPlus size={12} /> Add Social
+                          <FiPlus size={12} /> Social
                         </button>
                       )}
                     </div>

@@ -29,13 +29,13 @@ export default function AdminDashboard() {
     const fetchStats = async () => {
       try {
         const [servicesRes, testimonialsRes, imagesRes, packagesRes, locationsRes, teamRes, galleryRes] = await Promise.all([
-          fetch('/api/admin/services'),
-          fetch('/api/admin/testimonials'),
-          fetch('/api/admin/site-images'),
-          fetch('/api/admin/packages'),
-          fetch('/api/admin/locations'),
-          fetch('/api/admin/team'),
-          fetch('/api/admin/gallery'),
+          fetch('/api/admin/services', { cache: 'no-store' }),
+          fetch('/api/admin/testimonials', { cache: 'no-store' }),
+          fetch('/api/admin/site-images', { cache: 'no-store' }),
+          fetch('/api/admin/packages', { cache: 'no-store' }),
+          fetch('/api/admin/locations', { cache: 'no-store' }),
+          fetch('/api/admin/team', { cache: 'no-store' }),
+          fetch('/api/admin/gallery', { cache: 'no-store' }),
         ]);
 
         const servicesData = await servicesRes.json();

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const { data, error } = await supabase
@@ -9,7 +11,9 @@ export async function GET() {
       .order('id', { ascending: false });
 
     if (error) throw error;
-    return NextResponse.json({ data });
+    const response = NextResponse.json({ data });
+    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    return response;
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

@@ -65,7 +65,7 @@ export default function PackagesAdmin() {
   /* ─── Fetch ─── */
   const fetchPackages = async () => {
     try {
-      const res = await fetch('/api/admin/packages');
+      const res = await fetch('/api/admin/packages', { cache: 'no-store' });
       const result = await res.json();
       setPackages(result.data || []);
     } catch (e) { console.error(e); }
@@ -126,7 +126,7 @@ export default function PackagesAdmin() {
   const handleDeletePackage = async (id: number) => {
     try {
       await fetch(`/api/admin/packages/${id}`, { method: 'DELETE' });
-      fetchPackages();
+      await fetchPackages();
       if (expandedId === id) setExpandedId(null);
     } catch (e) { console.error(e); }
     finally { setDeleteConfirm(null); }
@@ -262,7 +262,7 @@ export default function PackagesAdmin() {
         </div>
         <button onClick={() => { setShowForm(true); setEditingId(null); setFormData(emptyPkg); }}
           className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md hover:shadow-lg text-sm font-medium">
-          <FiPlus size={16} /> Add Package
+          <FiPlus size={16} /> Package
         </button>
       </div>
 
@@ -344,7 +344,7 @@ export default function PackagesAdmin() {
                             {subForm?.section !== 'highlight' || subForm.packageId !== pkg.id ? (
                               <button onClick={() => openSubForm('highlight', pkg.id)}
                                 className="flex items-center gap-1 text-xs bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary-dark transition font-medium">
-                                <FiPlus size={12} /> Add Highlight
+                                <FiPlus size={12} /> Highlight
                               </button>
                             ) : null}
                           </div>
@@ -385,7 +385,7 @@ export default function PackagesAdmin() {
                             {subForm?.section !== 'inclusion' || subForm.packageId !== pkg.id ? (
                               <button onClick={() => openSubForm('inclusion', pkg.id)}
                                 className="flex items-center gap-1 text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 transition font-medium">
-                                <FiPlus size={12} /> Add Inclusion
+                                <FiPlus size={12} /> Inclusion
                               </button>
                             ) : null}
                           </div>
@@ -426,7 +426,7 @@ export default function PackagesAdmin() {
                             {subForm?.section !== 'itinerary' || subForm.packageId !== pkg.id ? (
                               <button onClick={() => openSubForm('itinerary', pkg.id)}
                                 className="flex items-center gap-1 text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition font-medium">
-                                <FiPlus size={12} /> Add Day
+                                <FiPlus size={12} /> Day
                               </button>
                             ) : null}
                           </div>
