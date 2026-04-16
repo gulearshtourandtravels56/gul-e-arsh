@@ -1,166 +1,257 @@
 import { supabase } from "@/lib/supabaseClient";
 
+type CacheEntry<T> = {
+  value: T;
+  expiresAt: number;
+};
+
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const apiCache = new Map<string, CacheEntry<any>>();
+
+async function cached<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
+  const now = Date.now();
+  const entry = apiCache.get(key);
+  if (entry && entry.expiresAt > now) {
+    return entry.value;
+  }
+
+  const value = await fetcher();
+  apiCache.set(key, {
+    value,
+    expiresAt: now + CACHE_TTL_MS,
+  });
+
+  return value;
+}
+
+export function clearCache(keys?: string | string[]) {
+  if (!keys) {
+    apiCache.clear();
+    return;
+  }
+
+  const keyList = typeof keys === "string" ? [keys] : keys;
+  keyList.forEach((key) => apiCache.delete(key));
+}
+
 export async function getCompanyInfo() {
-  // company with id 1
-  const { data: company } = await supabase
-    .from("company")
-    .select()
-    .eq("id", 1)
-    .single();
-  return company;
+  return cached("getCompanyInfo", async () => {
+    const { data: company } = await supabase
+      .from("company")
+      .select()
+      .eq("id", 1)
+      .single();
+    return company;
+  });
 }
 
 export async function getContactInfo() {
-  // company with id 1
-  const { data: contact } = await supabase
-    .from("contact")
-    .select()
-    .eq("id", 1)
-    .single();
-  return contact;
+  return cached("getContactInfo", async () => {
+    const { data: contact } = await supabase
+      .from("contact")
+      .select()
+      .eq("id", 1)
+      .single();
+    return contact;
+  });
 }
 
 export async function getContactSocials(): Promise<any[]> {
-  // contact_id = 1
-  const { data: socials } = await supabase
-    .from("social_links")
-    .select()
-    .eq("contact_id", 1);
-  return socials || [];
+  return cached("getContactSocials", async () => {
+    const { data: socials } = await supabase
+      .from("social_links")
+      .select()
+      .eq("contact_id", 1);
+    return socials || [];
+  });
 }
 
 export async function getSiteImages(): Promise<any[]> {
-  // company with id 1
-  const { data: siteImages } = await supabase.from("site_images").select();
-  return siteImages || [];
+  return cached("getSiteImages", async () => {
+    const { data: siteImages } = await supabase.from("site_images").select();
+    return siteImages || [];
+  });
 }
 
 export async function getServices(): Promise<any[]> {
-  const { data: services } = await supabase.from("services").select();
-  return services || [];
+  return cached("getServices", async () => {
+    const { data: services } = await supabase.from("services").select();
+    return services || [];
+  });
 }
 
 export async function getWhyChooseUs(): Promise<any[]> {
-  const { data: whyChooseUs } = await supabase.from("why_choose_us").select();
-  return whyChooseUs || [];
+  return cached("getWhyChooseUs", async () => {
+    const { data: whyChooseUs } = await supabase
+      .from("why_choose_us")
+      .select();
+    return whyChooseUs || [];
+  });
 }
 
 export async function getCompanyStats(): Promise<any[]> {
-  const { data: companyStats } = await supabase.from("company_stats").select();
-  return companyStats || [];
+  return cached("getCompanyStats", async () => {
+    const { data: companyStats } = await supabase.from("company_stats").select();
+    return companyStats || [];
+  });
 }
 
 export async function getLocations(): Promise<any[]> {
-  const { data: locations } = await supabase.from("locations").select();
-  return locations || [];
+  return cached("getLocations", async () => {
+    const { data: locations } = await supabase.from("locations").select();
+    return locations || [];
+  });
 }
 
 export async function getLocationById(id: number): Promise<any> {
-  const { data: location } = await supabase.from("locations").select().eq("id", id).single();
-  return location || {};
+  return cached(`getLocationById:${id}`, async () => {
+    const { data: location } = await supabase
+      .from("locations")
+      .select()
+      .eq("id", id)
+      .single();
+    return location || {};
+  });
 }
 
 export async function getLocationsHighLights(
   locationId: number,
 ): Promise<any[]> {
-  const { data: locations } = await supabase
-    .from("location_highlights")
-    .select()
-    .eq("location_id", locationId);
-  return locations || [];
+  return cached(`getLocationsHighLights:${locationId}`, async () => {
+    const { data: locations } = await supabase
+      .from("location_highlights")
+      .select()
+      .eq("location_id", locationId);
+    return locations || [];
+  });
 }
 
 export async function getLocationBestFor(locationId: number): Promise<any[]> {
-  const { data: bestFor } = await supabase
-    .from("location_best_for")
-    .select()
-    .eq("location_id", locationId);
-  return bestFor || [];
+  return cached(`getLocationBestFor:${locationId}`, async () => {
+    const { data: bestFor } = await supabase
+      .from("location_best_for")
+      .select()
+      .eq("location_id", locationId);
+    return bestFor || [];
+  });
 }
 
 export async function getLocationWhatToSee(locationId: number): Promise<any[]> {
-  const { data: bestFor } = await supabase
-    .from("location_what_to_see")
-    .select()
-    .eq("location_id", locationId);
-  return bestFor || [];
+  return cached(`getLocationWhatToSee:${locationId}`, async () => {
+    const { data: bestFor } = await supabase
+      .from("location_what_to_see")
+      .select()
+      .eq("location_id", locationId);
+    return bestFor || [];
+  });
 }
 
 export async function getLocationRelatedPackages(
   locationId: number,
 ): Promise<any[]> {
-  const { data } = await supabase
-    .from("location_packages")
-    .select(
-      `
+  return cached(`getLocationRelatedPackages:${locationId}`, async () => {
+    const { data } = await supabase
+      .from("location_packages")
+      .select(
+        `
       id,
       location_id,
       package_id,
       packages (*)
-    `
-    )
-    .eq("location_id", locationId);
-  return data || [];
+    `,
+      )
+      .eq("location_id", locationId);
+    return data || [];
+  });
 }
 
 export async function getAllPackages(): Promise<any[]> {
-  const { data: packages } = await supabase.from("packages").select();
-  return packages || [];
+  return cached("getAllPackages", async () => {
+    const { data: packages } = await supabase.from("packages").select();
+    return packages || [];
+  });
 }
+
 export async function getPackageById(id: number): Promise<any> {
-  const { data: package_data } = await supabase
-    .from("packages")
-    .select()
-    .eq("id", id)
-    .single();
-  return package_data || {};
+  return cached(`getPackageById:${id}`, async () => {
+    const { data: package_data } = await supabase
+      .from("packages")
+      .select()
+      .eq("id", id)
+      .single();
+    return package_data || {};
+  });
 }
+
 export async function getPopularPackages(): Promise<any[]> {
-  // data.packages.filter((pkg) => pkg.category === "popular").length > 0
-  //   ? data.packages.filter((pkg) => pkg.category === "popular")
-  //   : data.packages.slice(0, 3);
-  const { data: popularPackages } = await supabase.from("packages").select();
-  return popularPackages || [];
+  return cached("getPopularPackages", async () => {
+    const { data: popularPackages } = await supabase.from("packages").select();
+    return popularPackages || [];
+  });
 }
+
 export async function getPackageHighlights(id: number): Promise<any[]> {
-  const { data: highlights } = await supabase
-    .from("package_highlights")
-    .select()
-    .eq("package_id", id);
-  return highlights || [];
+  return cached(`getPackageHighlights:${id}`, async () => {
+    const { data: highlights } = await supabase
+      .from("package_highlights")
+      .select()
+      .eq("package_id", id);
+    return highlights || [];
+  });
 }
+
 export async function getPackageInclusions(id: number): Promise<any[]> {
-  const { data: inclusions } = await supabase
-    .from("package_inclusions")
-    .select();
-  return inclusions || [];
+  return cached(`getPackageInclusions:${id}`, async () => {
+    const { data: inclusions } = await supabase
+      .from("package_inclusions")
+      .select()
+      .eq("package_id", id);
+    return inclusions || [];
+  });
 }
+
 export async function getPackageItinerary(id: number): Promise<any[]> {
-  const { data: itinerary } = await supabase.from("package_itinerary").select();
-  return itinerary || [];
+  return cached(`getPackageItinerary:${id}`, async () => {
+    const { data: itinerary } = await supabase
+      .from("package_itinerary")
+      .select()
+      .eq("package_id", id);
+    return itinerary || [];
+  });
 }
 
 export async function getTeamDetails(): Promise<any[]> {
-  const { data: team } = await supabase.from("team").select();
-  return team || [];
+  return cached("getTeamDetails", async () => {
+    const { data: team } = await supabase.from("team").select();
+    return team || [];
+  });
 }
 
 export async function getTestimonials(): Promise<any[]> {
-  const { data: testimonials } = await supabase.from("testimonials").select();
-  return testimonials || [];
+  return cached("getTestimonials", async () => {
+    const { data: testimonials } = await supabase.from("testimonials").select();
+    return testimonials || [];
+  });
 }
 
 export async function getFAQs(): Promise<any[]> {
-  const { data: faqs } = await supabase.from("faqs").select().order("id", { ascending: false });
-  return faqs || [];
+  return cached("getFAQs", async () => {
+    const { data: faqs } = await supabase
+      .from("faqs")
+      .select()
+      .order("id", { ascending: false });
+    return faqs || [];
+  });
 }
 
 export async function getGalleryItems(): Promise<any[]> {
-  const { data: gallery } = await supabase
-    .from("gallery")
-    .select()
-    .order("created_date", { ascending: false });
-  return gallery || [];
+  return cached("getGalleryItems", async () => {
+    const { data: gallery } = await supabase
+      .from("gallery")
+      .select()
+      .order("created_date", { ascending: false });
+    return gallery || [];
+  });
 }
 
 export async function addTestimonial(testimonial: {
@@ -178,5 +269,6 @@ export async function addTestimonial(testimonial: {
     throw new Error(error.message);
   }
 
+  clearCache("getTestimonials");
   return data;
 }
