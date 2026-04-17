@@ -11,6 +11,8 @@ import Footer from '@/components/footer';
 import Navbar from '@/components/navbar';
 import OurTeam from '@/components/ourTeam';
 import FAQsSection from '@/components/faqs';
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "Gul-e-Arsh - Kashmir Tour Packages & Travel Guide | Best Travel Agency",
@@ -20,6 +22,9 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
+      <Analytics />
+      <SpeedInsights />
+
       <Navbar />
       <HeroSection />
       <AboutPreview />
